@@ -1,0 +1,17 @@
+version: "3.2"
+
+services:
+  notification:
+    container_name: notification
+    build:
+      context: ${HUNCHO_DIR}/services/notification
+      dockerfile: ${HUNCHO_DIR}/services/notification/build/Dockerfile
+      args:
+        NODE_VERSION: 12
+    restart: always
+    volumes:
+      - ${HUNCHO_DIR}/services/notification/src:/home/app/src
+    env_file:
+      - ${HUNCHO_DIR}/env/dev/.env.notification
+    ports:
+      - 3000:3000
