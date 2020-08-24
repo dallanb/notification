@@ -1,2 +1,2 @@
-# Notification-Server
-NOTIFICATION SERVER Microservices
+# Notification
+NOTIFICATION Microservices
