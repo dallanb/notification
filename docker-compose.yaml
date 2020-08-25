@@ -1,13 +1,26 @@
 version: '3.2'
-  services:
-    notification:
-      container_name: notification
-      build:
-        context: ${HUNCHO_DIR}/services/notification
-        dockerfile: ${HUNCHO_DIR}/services/notificiation/build/Dockerfile
-        args:
-          NODE_VERSION: 12
-      volumes:
-        - ${HUNCHO_DIR}/services/notification/src:/home/app/src
-      env_file:
-        - ${HUNCHO_DIR}/env/dev/.env.notification
+
+services:
+  notification:
+    container_name: notification
+    build:
+      context: ${HUNCHO_DIR}/services/notification
+      dockerfile: ${HUNCHO_DIR}/services/notification/build/Dockerfile
+      args:
+        NODE_VERSION: 12
+    volumes:
+      - ${HUNCHO_DIR}/services/notification/src:/home/app/src
+    env_file:
+      - ${HUNCHO_DIR}/env/dev/.env.notification
+  notification_proxy:
+    container_name: notification_proxy
+    build:
+      context: ${HUNCHO_DIR}/services/notification/proxy
+      dockerfile: ${HUNCHO_DIR}/services/notification/proxy/build/Dockerfile
+    restart: on-failure
+    volumes:
+      - ./statics/.:/usr/share/nginx/
+    ports:
+      - 80:80
+    depends_on:
+      - notification
