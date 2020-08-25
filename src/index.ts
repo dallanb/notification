@@ -9,6 +9,10 @@ import cors from 'cors';
 app.use(bodyParser.json());
 app.use(cors());
 
+// libs
+import { Consumer } from './libs';
+Consumer.run();
+
 // routes
 import routes from './routes';
 app.use(routes);
