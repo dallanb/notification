@@ -13,8 +13,8 @@ app.use(cors());
 import routes from './routes';
 app.use(routes);
 
-// middleware
-import { errorHandler, logger, notFoundHandler } from './middleware';
+// middlewares
+import { errorHandler, logger, notFoundHandler } from './middlewares';
 app.use(logger);
 
 app.use(errorHandler);
