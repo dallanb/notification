@@ -13,6 +13,7 @@ COPY yarn.lock ./yarn.lock
 COPY tsconfig.json ./tsconfig.json
 COPY tslint.json ./tslint.json
 COPY node_modules ./node_modules
+COPY environment.d.ts ./environment.d.ts
 
 RUN yarn install
 

@@ -10,8 +10,11 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // libs
-import { Consumer } from './libs';
-Consumer.run();
+// TODO: clean this up
+import { Consumer, Producer } from './libs';
+import { listener } from './event';
+new Consumer(listener).run();
+Producer.connect();
 
 // routes
 import routes from './routes';
