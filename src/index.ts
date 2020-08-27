@@ -1,32 +1,23 @@
-// express
-import express from 'express';
-const app = express();
+import { App, Libs, Middlewares, Routes } from './providers';
 
-// dependencies
-import bodyParser from 'body-parser';
-import cors from 'cors';
+const run = async () => {
+    Middlewares.initBodyParser(App.application);
+    Middlewares.initCors(App.application);
 
-app.use(bodyParser.json());
-app.use(cors());
+    await Libs.initRabbitMQ();
+    await Libs.initKafka();
 
-// libs
-// TODO: clean this up
-import { Consumer, Producer } from './libs';
-import { listener } from './event';
-new Consumer(listener).run();
-Producer.connect();
+    // routes
+    Routes.init(App.application);
 
-// routes
-import routes from './routes';
-app.use(routes);
+    // middlewares
+    Middlewares.initLogger(App.application);
+    Middlewares.initErrorHandler(App.application);
+    Middlewares.initNotFoundHandler(App.application);
 
-// middlewares
-import { errorHandler, logger, notFoundHandler } from './middlewares';
-app.use(logger);
+    App.listen();
+};
 
-app.use(errorHandler);
-app.use(notFoundHandler);
-
-app.listen(process.env.PORT, () => {
-    console.log('Server Started');
-});
+run()
+    .then(() => console.log('APP READY'))
+    .catch((err) => console.error('APP NOT READY'));

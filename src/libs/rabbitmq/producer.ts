@@ -60,6 +60,7 @@ class Producer {
                     throw err;
                 }
                 this.connection = connection;
+                this.startPublisher();
             }
         );
     }
@@ -72,11 +73,11 @@ class Producer {
                 }
 
                 ch.on('error', (err: Error): void =>
-                    console.error('[AMQP] channel closed')
+                    console.error('[AMQP] channel closed', err)
                 );
 
                 ch.on('close', (): void =>
-                    console.log('[AMQP] channel closed')
+                    console.log('[AMQP] channel closed', err)
                 );
 
                 this.channel = ch;
@@ -91,23 +92,22 @@ class Producer {
     }
 
     // method to publish a message, will queue messages internally if the connection is down and resend later
-    publish(exchange: string, routingKey: string, content: any): void {
+    publish(exchange: string, exchangeType: string, message: any): void {
         try {
+            this.channel.assertExchange(exchange, exchangeType, {
+                durable: false,
+            });
             this.channel.publish(
                 exchange,
-                routingKey,
-                content,
+                '',
+                Buffer.from(message),
                 {
                     persistent: true,
                 },
                 (err: Error, ok: any): void => {
                     if (err) {
                         console.error('[AMQP] publish', err);
-                        this.offlinePubQueue.push([
-                            exchange,
-                            routingKey,
-                            content,
-                        ]);
+                        this.offlinePubQueue.push([exchange, '', message]);
                         this.channel.close((err: Error) =>
                             console.error('[AMQP] close', err)
                         );
@@ -116,7 +116,7 @@ class Producer {
             );
         } catch (e) {
             console.error('[AMQP] publish', e.message);
-            this.offlinePubQueue.push([exchange, routingKey, content]);
+            this.offlinePubQueue.push([exchange, '', message]);
         }
     }
 
