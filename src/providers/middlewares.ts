@@ -9,7 +9,7 @@ class Middlewares {
     }
 
     initCors(app: express.Application): void {
-        app.use(cors);
+        app.use(cors());
     }
 
     initLogger(app: express.Application): void {

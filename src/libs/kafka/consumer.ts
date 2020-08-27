@@ -38,7 +38,7 @@ class Consumer {
                 this._options
             );
 
-            consumer.on('message', async (event: Message) => {
+            consumer.on('message', (event: Message) => {
                 console.log('Message received: ', event);
                 this.listener(event);
             });
@@ -46,6 +46,7 @@ class Consumer {
             consumer.on('error', (error: any) =>
                 console.error('Consumer error: ', error)
             );
+            console.log('Consumer ready');
             return;
         } catch (e) {
             console.log(e);
