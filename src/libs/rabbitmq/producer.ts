@@ -9,6 +9,7 @@ class Producer {
         password: string;
         port: number;
         username: string;
+        vhost: string;
     };
     constructor() {
         this._connection = undefined;
@@ -18,6 +19,7 @@ class Producer {
             port: config.RABBITMQ_PORT,
             username: config.RABBITMQ_USERNAME,
             password: config.RABBITMQ_PASSWORD,
+            vhost: config.RABBITMQ_VHOST,
         };
     }
 

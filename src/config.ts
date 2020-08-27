@@ -9,6 +9,7 @@ declare var process: {
         RABBITMQ_PORT: number;
         RABBITMQ_USERNAME: string;
         RABBITMQ_PASSWORD: string;
+        RABBITMQ_VHOST: string;
     };
 };
 
@@ -24,6 +25,7 @@ class Config {
     RABBITMQ_PORT: number = process.env.RABBITMQ_PORT;
     RABBITMQ_USERNAME: string = process.env.RABBITMQ_USERNAME;
     RABBITMQ_PASSWORD: string = process.env.RABBITMQ_PASSWORD;
+    RABBITMQ_VHOST: string = process.env.RABBITMQ_VHOST;
 }
 
 export default new Config();
