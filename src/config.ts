@@ -10,8 +10,8 @@ declare var process: {
         RABBITMQ_USERNAME: string;
         RABBITMQ_PASSWORD: string;
         RABBITMQ_VHOST: string;
-        REDIS_HOST: string;
-        REDIS_PORT: number;
+        CACHE_HOST: string;
+        CACHE_PORT: number;
     };
 };
 
@@ -28,8 +28,8 @@ class Config {
     RABBITMQ_USERNAME: string = process.env.RABBITMQ_USERNAME;
     RABBITMQ_PASSWORD: string = process.env.RABBITMQ_PASSWORD;
     RABBITMQ_VHOST: string = process.env.RABBITMQ_VHOST;
-    REDIS_HOST: string = process.env.REDIS_HOST;
-    REDIS_PORT: number = process.env.REDIS_PORT;
+    CACHE_HOST: string = process.env.CACHE_HOST;
+    CACHE_PORT: number = process.env.CACHE_PORT;
 }
 
 export default new Config();

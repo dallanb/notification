@@ -11,8 +11,8 @@ declare global {
             RABBITMQ_USERNAME: string;
             RABBITMQ_PASSWORD: string;
             RABBITMQ_VHOST: string;
-            REDIS_HOST: string;
-            REDIS_PORT: string;
+            CACHE_HOST: string;
+            CACHE_PORT: string;
         }
     }
 }

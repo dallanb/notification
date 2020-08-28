@@ -1,3 +1,4 @@
+import { logger } from '../../common';
 import {
     KafkaClient,
     Consumer as KafkaConsumer,
@@ -50,7 +51,7 @@ class Consumer {
             );
 
             consumer.on('message', (event: Message) => {
-                console.log('Message received: ', event);
+                logger.info('Message received: ', event);
                 this.listener(event);
             });
 
@@ -58,7 +59,7 @@ class Consumer {
                 topic.maxNum = 2;
                 this.offset.fetch([topic], (err: Error, offsets: any) => {
                     if (err) {
-                        return console.error(err);
+                        return logger.error(err);
                     }
                     const min = Math.min.apply(
                         null,
@@ -69,12 +70,12 @@ class Consumer {
             });
 
             consumer.on('error', (error: Error) =>
-                console.error('Consumer error: ', error)
+                logger.error('Kafka Consumer error: ', error)
             );
-            console.log('Consumer ready');
+            logger.info('Kafka Consumer ready');
             return;
         } catch (e) {
-            console.log(e);
+            logger.info(e);
         }
     };
 }

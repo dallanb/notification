@@ -12,6 +12,13 @@ services:
             - ${HUNCHO_DIR}/services/notification/src:/home/app/src
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification
+    notification_cache:
+        container_name: notification_cache
+        build:
+            context: ${HUNCHO_DIR}/services/redis
+            dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
+        env_file:
+            - ${HUNCHO_DIR}/env/dev/.env.notification_cache
     notification_proxy:
         container_name: notification_proxy
         build:
