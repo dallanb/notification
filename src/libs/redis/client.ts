@@ -40,6 +40,44 @@ class Client {
             reject();
         });
     }
+
+    private _get(
+        key: string,
+        resolve: (reply: string | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.get(key, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
+
+    private _set(
+        key: string,
+        val: string,
+        resolve: (reply: string | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.set(key, val, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
+
+    get(key: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._get(key, resolve, reject);
+        });
+    }
+    set(key: string, val: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._set(key, val, resolve, reject);
+        });
+    }
 }
 
 export default new Client();
