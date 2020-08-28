@@ -1,11 +1,17 @@
-import { KafkaClient, Consumer as KafkaConsumer, Message } from 'kafka-node';
+import {
+    KafkaClient,
+    Consumer as KafkaConsumer,
+    Message,
+    Offset,
+} from 'kafka-node';
 import config from '../../config';
 
 class Consumer {
     private readonly _client: KafkaClient;
-    private readonly _topics: Array<any>;
+    private readonly _topics: any[];
     private readonly _options: any;
     private readonly listener: (event: Message) => void;
+    private readonly _offset: Offset;
 
     constructor(listener: (event: Message) => void) {
         this._client = new KafkaClient({
@@ -15,10 +21,11 @@ class Consumer {
             return { topic };
         });
         this._options = {};
+        this._offset = new Offset(this.client);
         this.listener = listener;
     }
 
-    get topics(): Array<any> {
+    get topics(): any[] {
         return this._topics;
     }
 
@@ -28,6 +35,10 @@ class Consumer {
 
     get options(): any {
         return this._options;
+    }
+
+    get offset(): Offset {
+        return this._offset;
     }
 
     run = (): void => {
@@ -43,7 +54,21 @@ class Consumer {
                 this.listener(event);
             });
 
-            consumer.on('error', (error: any) =>
+            consumer.on('offsetOutOfRange', (topic: any) => {
+                topic.maxNum = 2;
+                this.offset.fetch([topic], (err: Error, offsets: any) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                    const min = Math.min.apply(
+                        null,
+                        offsets[topic.topic][topic.partition]
+                    );
+                    consumer.setOffset(topic.topic, topic.partition, min);
+                });
+            });
+
+            consumer.on('error', (error: Error) =>
                 console.error('Consumer error: ', error)
             );
             console.log('Consumer ready');
