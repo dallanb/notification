@@ -19,6 +19,18 @@ services:
             dockerfile: ${HUNCHO_DIR}/services/redis/build/Dockerfile
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification_cache
+    notification_mongodb:
+        container_name: notification_mongodb
+        build:
+            context: ${HUNCHO_DIR}/services/mongodb
+            dockerfile: ${HUNCHO_DIR}/services/mongodb/build/Dockerfile
+            args:
+                MONGO_VERSION: 3.6
+        volumes:
+          - ${HUNCHO_DIR}/data/dev/notification_mongodb/data:/data/db
+          - ${HUNCHO_DIR}/services/notification/bin/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+        env_file:
+          - ${HUNCHO_DIR}/env/dev/.env.notification_mongodb
     notification_proxy:
         container_name: notification_proxy
         build:
@@ -31,3 +43,13 @@ services:
             - 80:80
         depends_on:
             - notification
+    mongo-express:
+        container_name: mongo-express
+        build:
+            context: ${HUNCHO_DIR}/services/mongo-express
+            dockerfile: ${HUNCHO_DIR}/services/mongo-express/build/Dockerfile
+        restart: always
+        ports:
+            - 8081:8081
+        env_file:
+            - ${HUNCHO_DIR}/env/dev/.env.mongo-express

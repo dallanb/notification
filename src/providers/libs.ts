@@ -1,4 +1,4 @@
-import { KafkaConsumer, RabbitMQProducer, RedisClient } from '../libs';
+import { KafkaConsumer, MongoDB, RabbitMQProducer, RedisClient } from '../libs';
 import { Services } from './index';
 
 class Libs {
@@ -13,6 +13,10 @@ class Libs {
 
     async initRedis(): Promise<void> {
         await RedisClient.init();
+    }
+
+    async initMongo(): Promise<void> {
+        await MongoDB.connect();
     }
 }
 

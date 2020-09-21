@@ -12,6 +12,7 @@ declare var process: {
         RABBITMQ_VHOST: string;
         CACHE_HOST: string;
         CACHE_PORT: number;
+        MONGO_URL: string;
     };
 };
 
@@ -30,6 +31,7 @@ class Config {
     RABBITMQ_VHOST: string = process.env.RABBITMQ_VHOST;
     CACHE_HOST: string = process.env.CACHE_HOST;
     CACHE_PORT: number = process.env.CACHE_PORT;
+    MONGO_URL: string = process.env.MONGO_URL;
 }
 
 export default new Config();

@@ -8,6 +8,7 @@ const run = async () => {
     await Libs.initRabbitMQ();
     await Libs.initKafka();
     await Libs.initRedis();
+    await Libs.initMongo();
 
     // routes
     Routes.init(App.application);
@@ -21,4 +22,4 @@ const run = async () => {
 
 run()
     .then(() => logger.info('App Ready'))
-    .catch((err) => logger.error('App Not Ready'));
+    .catch((err) => logger.error('App Not Ready', err));
