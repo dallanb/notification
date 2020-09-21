@@ -9,7 +9,7 @@ class Contest {
         logger.info(value);
         switch (key) {
             case 'participant_invited':
-                const { user_uuid } =
+                const { user_uuid, owner_uuid } =
                     typeof value === 'string'
                         ? JSON.parse(value)
                         : value.toString();
@@ -17,6 +17,8 @@ class Contest {
                     topic: 'contests',
                     key,
                     recipient: user_uuid,
+                    sender: owner_uuid,
+                    message: 'Contest Invite!',
                 });
                 RedisClient.get(user_uuid).then((reply: string) => {
                     logger.info(reply);
