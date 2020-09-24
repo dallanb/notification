@@ -1,4 +1,3 @@
 #!/bin/sh
 
-
-yarn run devStart
+npm run devStart

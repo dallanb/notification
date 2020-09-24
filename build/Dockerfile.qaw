@@ -14,11 +14,16 @@ COPY tsconfig.json ./tsconfig.json
 COPY tslint.json ./tslint.json
 COPY node_modules ./node_modules
 COPY environment.d.ts ./environment.d.ts
+COPY src ./src
 
 RUN npm install
 
-COPY src ./src
-COPY build/bin/entrypoint.sh ./build/bin/entrypoint.sh
+RUN npm install pm2 -g
+RUN npm run build
+
+COPY build/bin/entrypoint.qaw.sh ./build/bin/entrypoint.sh
+
+EXPOSE 3000
 
 ## run entrypoint.sh
 ENTRYPOINT ["sh", "./build/bin/entrypoint.sh"]

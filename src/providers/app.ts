@@ -14,7 +14,7 @@ class App {
 
     listen(): void {
         this.application.listen(process.env.PORT, () => {
-            logger.info('Server Started');
+            logger.info(`Server Started. Running at port ${process.env.PORT}`);
         });
     }
 }
