@@ -9,7 +9,9 @@ class Middlewares {
     }
 
     initCors(app: express.Application): void {
-        app.use(cors());
+        app.use(
+            cors({ credentials: true, origin: 'https://golf.techtapir.com' })
+        );
     }
 
     initErrorHandler(app: express.Application): void {

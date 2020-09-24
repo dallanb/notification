@@ -1,9 +1,10 @@
+import { logger } from '../../common';
 import amqp from 'amqplib/callback_api';
 import config from '../../config';
 
 class Producer {
     private _connection: any;
-    private readonly _connection_options: {
+    private readonly _connectionOptions: {
         protocol: string;
         hostname: string;
         password: string;
@@ -16,7 +17,7 @@ class Producer {
 
     constructor() {
         this._connection = undefined;
-        this._connection_options = {
+        this._connectionOptions = {
             protocol: 'amqp',
             hostname: config.RABBITMQ_HOST,
             port: config.RABBITMQ_PORT,
@@ -54,7 +55,7 @@ class Producer {
 
     connect(): void {
         amqp.connect(
-            { ...this._connection_options },
+            { ...this._connectionOptions },
             (err: Error, connection: amqp.Connection) => {
                 if (err) {
                     throw err;
@@ -67,17 +68,17 @@ class Producer {
 
     startPublisher(): void {
         this.connection.createConfirmChannel(
-            (err: Error, ch: amqp.ConfirmChannel) => {
-                if (this.closeOnErr(err)) {
+            (createErr: Error, ch: amqp.ConfirmChannel) => {
+                if (this.closeOnErr(createErr)) {
                     return;
                 }
 
-                ch.on('error', (err: Error): void =>
-                    console.error('[AMQP] channel closed', err)
+                ch.on('error', (channelErr: Error): any =>
+                    logger.error('[AMQP] channel closed', channelErr)
                 );
 
-                ch.on('close', (): void =>
-                    console.log('[AMQP] channel closed', err)
+                ch.on('close', (closeErr: Error): any =>
+                    logger.info('[AMQP] channel closed', closeErr)
                 );
 
                 this.channel = ch;
@@ -104,25 +105,25 @@ class Producer {
                 {
                     persistent: true,
                 },
-                (err: Error, ok: any): void => {
-                    if (err) {
-                        console.error('[AMQP] publish', err);
+                (pubErr: Error, ok: any): void => {
+                    if (pubErr) {
+                        logger.error('[AMQP] publish', pubErr);
                         this.offlinePubQueue.push([exchange, '', message]);
-                        this.channel.close((err: Error) =>
-                            console.error('[AMQP] close', err)
+                        this.channel.close((closeErr: Error) =>
+                            logger.error('[AMQP] close', closeErr)
                         );
                     }
                 }
             );
         } catch (e) {
-            console.error('[AMQP] publish', e.message);
+            logger.error('[AMQP] publish', e.message);
             this.offlinePubQueue.push([exchange, '', message]);
         }
     }
 
     closeOnErr(err: Error): boolean {
         if (!err) return false;
-        console.error('[AMQP] error', err);
+        logger.error('[AMQP] error', err);
         this.connection.close();
         return true;
     }

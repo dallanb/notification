@@ -1,11 +1,10 @@
 import { Message } from 'kafka-node';
-import { Producer } from '../libs';
+import { logger } from '../common';
 
 class Auth {
     handleEvent(key: Message['key'], value: Message['value']): void {
-        console.log(key);
-        console.log(value);
-        Producer.publish('web', 'direct', value);
+        logger.info(key);
+        logger.info(value);
     }
 }
 

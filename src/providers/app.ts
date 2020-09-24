@@ -1,3 +1,4 @@
+import { logger } from '../common';
 import express from 'express';
 
 class App {
@@ -13,7 +14,7 @@ class App {
 
     listen(): void {
         this.application.listen(process.env.PORT, () => {
-            console.log('Server Started');
+            logger.info('Server Started');
         });
     }
 }
