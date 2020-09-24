@@ -10,7 +10,13 @@ class Middlewares {
 
     initCors(app: express.Application): void {
         app.use(
-            cors({ credentials: true, origin: 'https://golf.techtapir.com' })
+            cors({
+                credentials: true,
+                origin: [
+                    'https://golf.techtapir.com',
+                    'https://local.techtapir.com:3000',
+                ],
+            })
         );
     }
 
