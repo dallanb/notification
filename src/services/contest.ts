@@ -7,12 +7,10 @@ class Contest {
     handleEvent = (key: Message['key'], value: Message['value']) => {
         logger.info(key);
         logger.info(value);
+        const { user_uuid, owner_uuid } =
+            typeof value === 'string' ? JSON.parse(value) : value.toString();
         switch (key) {
             case 'participant_invited':
-                const { user_uuid, owner_uuid } =
-                    typeof value === 'string'
-                        ? JSON.parse(value)
-                        : value.toString();
                 Notification.create({
                     topic: 'contests',
                     key,
@@ -21,6 +19,19 @@ class Contest {
                     message: 'Contest Invite!',
                 });
                 RedisClient.get(user_uuid).then((reply: string) => {
+                    logger.info(reply);
+                    RabbitMQProducer.publish('web', 'direct', reply);
+                });
+                break;
+            case 'participant_active':
+                Notification.create({
+                    topic: 'contests',
+                    key,
+                    recipient: owner_uuid,
+                    sender: user_uuid,
+                    message: 'Contest Accepted!',
+                });
+                RedisClient.get(owner_uuid).then((reply: string) => {
                     logger.info(reply);
                     RabbitMQProducer.publish('web', 'direct', reply);
                 });

@@ -2,6 +2,7 @@
  * External dependencies
  */
 import * as mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 /**
  * Create the notification schema
@@ -41,6 +42,8 @@ const notification: mongoose.Schema = new mongoose.Schema(
         },
     }
 );
+
+notification.plugin(mongoosePaginate);
 
 /**
  * Export the model

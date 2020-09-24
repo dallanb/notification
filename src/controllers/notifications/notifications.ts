@@ -5,24 +5,27 @@ import { Notification } from '../../models';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
-        const { recipient, page = 1, per_page = 10 }: any = req.query;
-
+        const { page = 1, per_page = 10 }: any = req.query;
+        const recipient = req.header('x-consumer-custom-id');
         try {
-            const notifications = await Notification.find({ recipient })
-                .limit(per_page * 1)
-                .skip((page - 1) * per_page)
-                .exec();
-
-            const count = await Notification.countDocuments();
+            const notifications = await Notification.paginate(
+                {
+                    recipient,
+                },
+                {
+                    page,
+                    limit: per_page,
+                }
+            );
 
             res.json({
                 msg: 'OK',
                 data: {
-                    notifications,
+                    notifications: notifications.docs,
                 },
                 _metadata: {
-                    total_count: count,
-                    page_count: notifications.length,
+                    total_count: notifications.totalDocs,
+                    page_count: notifications.docs.length,
                     page,
                     per_page,
                 },
