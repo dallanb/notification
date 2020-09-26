@@ -22,12 +22,12 @@ class Notifications {
                 msg: 'OK',
                 data: {
                     notifications: notifications.docs,
-                },
-                _metadata: {
-                    total_count: notifications.totalDocs,
-                    page_count: notifications.docs.length,
-                    page,
-                    per_page,
+                    _metadata: {
+                        total_count: notifications.totalDocs,
+                        page_count: notifications.docs.length,
+                        page,
+                        per_page,
+                    },
                 },
             });
         } catch (err) {

@@ -7,7 +7,7 @@ class Contest {
     handleEvent = (key: Message['key'], value: Message['value']) => {
         logger.info(key);
         logger.info(value);
-        const { user_uuid, owner_uuid } =
+        const { user_uuid, owner_uuid, contest_uuid, participant_uuid } =
             typeof value === 'string' ? JSON.parse(value) : value.toString();
         const notification = new Notification({});
         switch (key) {
@@ -17,6 +17,8 @@ class Contest {
                 notification.recipient = user_uuid;
                 notification.sender = owner_uuid;
                 notification.message = 'Contest Invite!';
+                notification.contest_uuid = contest_uuid;
+                notification.participant_uuid = participant_uuid;
                 notification.save();
                 RedisClient.get(user_uuid).then((reply: string) => {
                     logger.info(reply);
@@ -27,6 +29,8 @@ class Contest {
                             token: JSON.parse(reply).token,
                             message: notification.message,
                             sender: notification.sender,
+                            contest_uuid: notification.contest_uuid,
+                            participant_uuid: notification.participant_uuid
                         })
                     );
                 });
@@ -37,6 +41,8 @@ class Contest {
                 notification.recipient = owner_uuid;
                 notification.sender = user_uuid;
                 notification.message = 'Contest Accepted!';
+                notification.contest_uuid = contest_uuid;
+                notification.participant_uuid = participant_uuid;
                 notification.save();
                 RedisClient.get(owner_uuid).then((reply: string) => {
                     logger.info(reply);
@@ -47,6 +53,8 @@ class Contest {
                             token: JSON.parse(reply).token,
                             message: notification.message,
                             sender: notification.sender,
+                            contest_uuid: notification.contest_uuid,
+                            participant_uuid: notification.participant_uuid
                         })
                     );
                 });
