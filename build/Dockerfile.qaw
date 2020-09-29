@@ -1,5 +1,4 @@
-ARG NODE_VERSION
-FROM node:${NODE_VERSION}
+FROM node:12
 
 
 # Create app directory
