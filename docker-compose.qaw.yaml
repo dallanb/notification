@@ -8,10 +8,13 @@ services:
             dockerfile: ${HUNCHO_DIR}/services/notification/build/Dockerfile.qaw
             args:
                 NODE_VERSION: 12
+        volumes:
+            - ${HUNCHO_DIR}/services/notification/src:/home/app/src
         env_file:
             - ${HUNCHO_DIR}/env/qaw/.env.notification
         networks:
             - app-net
+            - kong-net
     notification_cache:
         container_name: notification_cache
         build:
@@ -38,20 +41,20 @@ services:
             - ${HUNCHO_DIR}/env/qaw/.env.notification_mongodb
         networks:
             - app-net
-    notification_proxy:
-        container_name: notification_proxy
-        build:
-            context: ${HUNCHO_DIR}/services/notification/proxy
-            dockerfile: ${HUNCHO_DIR}/services/notification/proxy/build/Dockerfile
-        restart: on-failure
-        volumes:
-            - ./statics/.:/usr/share/nginx/
-        ports:
-            - 80:80
-        depends_on:
-            - notification
-        networks:
-            - app-net
+#    notification_proxy:
+#        container_name: notification_proxy
+#        build:
+#            context: ${HUNCHO_DIR}/services/notification/proxy
+#            dockerfile: ${HUNCHO_DIR}/services/notification/proxy/build/Dockerfile
+#        restart: on-failure
+#        volumes:
+#            - ./statics/.:/usr/share/nginx/
+#        ports:
+#            - 80:80
+#        depends_on:
+#            - notification
+#        networks:
+#            - app-net
     mongo-express:
         container_name: mongo-express
         build:
@@ -64,21 +67,24 @@ services:
             - ${HUNCHO_DIR}/env/qaw/.env.notification-mongo-express
         networks:
             - app-net
-    redis-commander:
-        container_name: redis-commander
-        build:
-            context: ${HUNCHO_DIR}/services/redis-commander
-            dockerfile: ${HUNCHO_DIR}/services/redis-commander/build/Dockerfile
-        restart: unless-stopped
-        ports:
-            - 8082:8081
-        env_file:
-            - ${HUNCHO_DIR}/env/qaw/.env.notification-redis-commander
-        depends_on:
-            - notification_cache
-        networks:
-            - app-net
+#    redis-commander:
+#        container_name: redis-commander
+#        build:
+#            context: ${HUNCHO_DIR}/services/redis-commander
+#            dockerfile: ${HUNCHO_DIR}/services/redis-commander/build/Dockerfile
+#        restart: unless-stopped
+#        ports:
+#            - 8082:8081
+#        env_file:
+#            - ${HUNCHO_DIR}/env/qaw/.env.notification-redis-commander
+#        depends_on:
+#            - notification_cache
+#        networks:
+#            - app-net
 networks:
     app-net:
         external:
             name: build_app-net
+    kong-net:
+        external:
+            name: build_kong-net
