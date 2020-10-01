@@ -5,10 +5,11 @@ const run = async () => {
     Middlewares.initBodyParser(App.application);
     Middlewares.initCors(App.application);
 
-    await Libs.initRabbitMQ();
+    // await Libs.initRabbitMQ();
     await Libs.initKafka();
     await Libs.initRedis();
     await Libs.initMongo();
+    await Libs.initWS(App.httpServer);
 
     // routes
     Routes.init(App.application);

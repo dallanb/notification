@@ -1,4 +1,3 @@
 #!/bin/sh
 
-#pm2-runtime dist/index.js
-npm run devStart
+pm2-runtime dist/index.js

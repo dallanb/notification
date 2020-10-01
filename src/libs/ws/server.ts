@@ -1,49 +1,40 @@
 import { logger } from '../../common';
-import ws, { ServerOptions } from 'ws';
-import config from '../../config';
+import WebSocket, { ServerOptions } from 'ws';
+import { Server as HTTPServer } from 'http';
 
 class Server {
-    private _server?: any;
-    private _socket?: WebSocket;
+    private _wss?: WebSocket.Server;
     private readonly _serverOptions: ServerOptions;
+    private readonly listener: (data: WebSocket.Data) => void;
 
-    constructor() {
-        this._server = undefined;
-        this._socket = undefined;
+    constructor(server: HTTPServer, listener: (data: WebSocket.Data) => void) {
+        this._wss = undefined;
         this._serverOptions = {
-            port: config.WS_PORT,
+            server,
         };
+        this.listener = listener;
     }
 
-    get server(): any {
-        return this._server;
+    get wss(): WebSocket.Server | undefined {
+        return this._wss;
     }
 
-    set server(server: any) {
-        this._server = server;
+    set wss(wss: WebSocket.Server | undefined) {
+        this._wss = wss;
     }
 
-    get socket(): WebSocket | undefined {
-        return this._socket;
-    }
-
-    set socket(socket: WebSocket | undefined) {
-        this._socket = socket;
-    }
-
-    connect(): void {
+    init(): void {
         try {
-            this.server = new ws.Server(this._serverOptions);
-            this.server.on('connection', (socket: ) => {
-                this.socket = socket;
-                console.log('connected');
-                console.log('client Set length: ', socketServer.clients.size);
-                socketClient.on('close', (socketClient) => {
-                    console.log('closed');
-                    console.log(
-                        'Number of clients: ',
-                        socketServer.clients.size
-                    );
+            this.wss = new WebSocket.Server(this._serverOptions);
+            this.wss.on('connection', (ws: WebSocket) => {
+                logger.info('connected');
+                logger.info('client Set length: ', this.wss?.clients.size);
+                ws.on('message', (data: WebSocket.Data) => {
+                    this.listener(data);
+                });
+                ws.on('close', (client: number) => {
+                    logger.info('closed');
+                    logger.info('Number of clients: ', this.wss?.clients.size);
                 });
             });
             logger.info('WS Server is ready');
