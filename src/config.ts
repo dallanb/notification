@@ -13,6 +13,7 @@ declare var process: {
         CACHE_HOST: string;
         CACHE_PORT: number;
         MONGO_URL: string;
+        WS_PORT: number;
     };
 };
 
@@ -32,6 +33,7 @@ class Config {
     CACHE_HOST: string = process.env.CACHE_HOST;
     CACHE_PORT: number = process.env.CACHE_PORT;
     MONGO_URL: string = process.env.MONGO_URL;
+    WS_PORT: number = process.env.PORT;
 }
 
 export default new Config();
