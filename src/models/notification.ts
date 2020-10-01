@@ -34,12 +34,13 @@ const notification: mongoose.Schema = new mongoose.Schema(
             required: false,
             default: false,
         },
+        properties: {}
     },
     {
         timestamps: {
             createdAt: 'ctime',
             updatedAt: 'mtime',
-        },
+        }
     }
 );
 

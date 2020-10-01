@@ -17,11 +17,9 @@ class Contest {
                 notification.recipient = user_uuid;
                 notification.sender = owner_uuid;
                 notification.message = 'Contest Invite!';
-                notification.contest_uuid = contest_uuid;
-                notification.participant_uuid = participant_uuid;
+                notification.properties = {contest_uuid, participant_uuid};
                 notification.save();
                 RedisClient.get(user_uuid).then((reply: string) => {
-                    logger.info(reply);
                     RabbitMQProducer.publish(
                         'web',
                         'direct',
@@ -29,8 +27,8 @@ class Contest {
                             token: JSON.parse(reply).token,
                             message: notification.message,
                             sender: notification.sender,
-                            contest_uuid: notification.contest_uuid,
-                            participant_uuid: notification.participant_uuid
+                            contest_uuid: notification.properties.contest_uuid,
+                            participant_uuid: notification.properties.participant_uuid
                         })
                     );
                 });
