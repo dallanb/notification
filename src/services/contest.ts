@@ -39,8 +39,7 @@ class Contest {
                 notification.recipient = owner_uuid;
                 notification.sender = user_uuid;
                 notification.message = 'Contest Accepted!';
-                notification.contest_uuid = contest_uuid;
-                notification.participant_uuid = participant_uuid;
+                notification.properties = {contest_uuid, participant_uuid};
                 notification.save();
                 RedisClient.get(owner_uuid).then((reply: string) => {
                     logger.info(reply);
@@ -51,8 +50,8 @@ class Contest {
                             token: JSON.parse(reply).token,
                             message: notification.message,
                             sender: notification.sender,
-                            contest_uuid: notification.contest_uuid,
-                            participant_uuid: notification.participant_uuid
+                            contest_uuid: notification.properties.contest_uuid,
+                            participant_uuid: notification.properties.participant_uuid
                         })
                     );
                 });
