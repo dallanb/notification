@@ -1,5 +1,13 @@
-import { KafkaConsumer, MongoDB, RabbitMQProducer, RedisClient } from '../libs';
+import {
+    KafkaConsumer,
+    MongoDB,
+    RabbitMQProducer,
+    RedisClient,
+    WSServer,
+} from '../libs';
 import { Services } from './index';
+import { logger } from '../common';
+import { Server } from 'http';
 
 class Libs {
     async initKafka(): Promise<void> {
@@ -17,6 +25,10 @@ class Libs {
 
     async initMongo(): Promise<void> {
         await MongoDB.connect();
+    }
+
+    async initWS(httpServer: Server): Promise<void> {
+        new WSServer(httpServer, (data) => logger.info(data)).init();
     }
 }
 
