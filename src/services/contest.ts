@@ -22,7 +22,7 @@ class Contest {
                 notification.sender = owner_uuid;
                 notification.message =
                     locale.EVENTS.CONTESTS.PARTICIPANT_INVITED;
-                notification.save();
+                await notification.save();
                 // WS
                 wsSendMessage(
                     user_uuid,
