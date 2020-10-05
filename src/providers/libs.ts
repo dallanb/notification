@@ -5,7 +5,7 @@ import {
     RedisClient,
     WSServer,
 } from '../libs';
-import { logger } from '../common';
+import { logger, Constants } from '../common';
 import { Server } from 'http';
 import { Message } from 'kafka-node';
 import { Account, Auth, Contest, Score, Sport, Wager } from '../services';
@@ -28,22 +28,22 @@ class Libs {
     async initKafka(): Promise<void> {
         this.kafka = new KafkaConsumer(({ topic, key, value }: Message) => {
             switch (topic) {
-                case 'auth':
+                case Constants.TOPICS.AUTH:
                     Auth.handleEvent(key, value);
                     break;
-                case 'accounts':
+                case Constants.TOPICS.ACCOUNTS:
                     Account.handleEvent(key, value);
                     break;
-                case 'contests':
+                case Constants.TOPICS.CONTESTS:
                     Contest.handleEvent(key, value);
                     break;
-                case 'scores':
+                case Constants.TOPICS.SCORES:
                     Score.handleEvent(key, value);
                     break;
-                case 'sports':
+                case Constants.TOPICS.SPORTS:
                     Sport.handleEvent(key, value);
                     break;
-                case 'wagers':
+                case Constants.TOPICS.WAGERS:
                     Wager.handleEvent(key, value);
                     break;
                 default:
