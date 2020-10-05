@@ -39,6 +39,29 @@ class Notifications {
         }
     }
 
+    public static async pending(req: Request, res: Response): Promise<any> {
+        const recipient = req.header('x-consumer-custom-id');
+        try {
+            const count = await Notification.count({
+                recipient,
+                read: false,
+            }).exec();
+
+            res.json({
+                msg: 'OK',
+                data: {
+                    count,
+                },
+            });
+        } catch (err) {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+                msg: httpStatus[500],
+                data: null,
+                err: JSON.stringify(err),
+            });
+        }
+    }
+
     public static async update(req: Request, res: Response): Promise<any> {
         const { _id } = req.params;
         const { body: $set } = req;

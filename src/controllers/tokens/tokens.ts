@@ -6,9 +6,8 @@ import { logger } from '../../common';
 class Tokens {
     public static async create(req: Request, res: Response): Promise<any> {
         try {
-            const { uuid, token } = req.body;
-            logger.info(uuid);
-            logger.info(token);
+            const { token } = req.body;
+            const uuid = req.header('x-consumer-custom-id');
             await Libs.redis.set(uuid, JSON.stringify({ token }));
             res.json({
                 msg: 'OK',
