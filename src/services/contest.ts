@@ -54,7 +54,7 @@ class Contest {
                 notification.sender = user_uuid;
                 notification.message =
                     locale.EVENTS.CONTESTS.PARTICIPANT_ACTIVE;
-                notification.save();
+                await notification.save();
                 // WS
                 wsSendMessage(
                     owner_uuid,
