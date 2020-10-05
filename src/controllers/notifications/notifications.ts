@@ -19,6 +19,10 @@ class Notifications {
                 }
             );
 
+            if (recipient) {
+                await wsSendPending(recipient);
+            }
+
             res.json({
                 msg: 'OK',
                 data: {
