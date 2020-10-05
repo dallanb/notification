@@ -74,7 +74,7 @@ class Notifications {
             }).exec();
 
             if (recipient) {
-                wsSendPending(recipient);
+                await wsSendPending(recipient);
             }
 
             res.json({
