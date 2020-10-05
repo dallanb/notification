@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { Notification } from '../../models';
+import { wsSendPending } from '../../services/utils';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
@@ -17,6 +18,10 @@ class Notifications {
                     limit: per_page,
                 }
             );
+
+            if (recipient) {
+                await wsSendPending(recipient);
+            }
 
             res.json({
                 msg: 'OK',
@@ -64,12 +69,17 @@ class Notifications {
 
     public static async update(req: Request, res: Response): Promise<any> {
         const { _id } = req.params;
+        const recipient = req.header('x-consumer-custom-id');
         const { body: $set } = req;
 
         try {
             const notification = await Notification.findByIdAndUpdate(_id, {
                 $set,
             }).exec();
+
+            if (recipient) {
+                await wsSendPending(recipient);
+            }
 
             res.json({
                 msg: 'OK',
