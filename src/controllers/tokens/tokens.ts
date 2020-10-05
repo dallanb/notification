@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { RedisClient } from '../../libs';
+import { Libs } from '../../providers';
 import { logger } from '../../common';
 
 class Tokens {
     public static async create(req: Request, res: Response): Promise<any> {
         try {
-            const { uuid, token } = req.body;
-            logger.info(uuid);
-            logger.info(token);
-            await RedisClient.set(uuid, JSON.stringify({ token }));
+            const { token } = req.body;
+            const uuid = req.header('x-consumer-custom-id');
+            await Libs.redis.set(uuid, JSON.stringify({ token }));
             res.json({
                 msg: 'OK',
                 data: null,
