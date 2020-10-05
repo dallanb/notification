@@ -15,6 +15,7 @@ services:
         networks:
             - notification-net
             - event-net
+            - kong-net
     notification_cache:
         container_name: notification_cache
         image: redis:6
@@ -77,3 +78,6 @@ networks:
     event-net:
         external:
             name: event_event-net
+    kong-net:
+        external:
+            name: frontend_kong-net

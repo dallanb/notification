@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { RedisClient } from '../../libs';
+import { Libs } from '../../providers';
 import { logger } from '../../common';
 
 class Tokens {
@@ -9,7 +9,7 @@ class Tokens {
             const { uuid, token } = req.body;
             logger.info(uuid);
             logger.info(token);
-            await RedisClient.set(uuid, JSON.stringify({ token }));
+            await Libs.redis.set(uuid, JSON.stringify({ token }));
             res.json({
                 msg: 'OK',
                 data: null,

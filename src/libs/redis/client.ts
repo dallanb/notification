@@ -67,6 +67,60 @@ class Client {
             resolve(reply);
         });
     }
+    private _range(
+        key: string,
+        start: number,
+        stop: number,
+        resolve: (reply: string[] | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.lrange(key, start, stop, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
+    private _pop(
+        key: string,
+        resolve: (reply: string | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.lpop(key, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
+
+    private _push(
+        key: string,
+        val: string,
+        resolve: (reply: number | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.lpush(key, val, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
+    private _rem(
+        key: string,
+        count: number,
+        val: string,
+        resolve: (reply: number | null) => void,
+        reject: (err: Error) => void
+    ): any {
+        this.client.lrem(key, count, val, (err, reply) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(reply);
+        });
+    }
 
     get(key: string): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -76,6 +130,28 @@ class Client {
     set(key: string, val: string): Promise<any> {
         return new Promise((resolve, reject) => {
             this._set(key, val, resolve, reject);
+        });
+    }
+
+    range(key: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._range(key, 0, -1, resolve, reject);
+        });
+    }
+
+    pop(key: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._pop(key, resolve, reject);
+        });
+    }
+    push(key: string, val: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._push(key, val, resolve, reject);
+        });
+    }
+    rem(key: string, val: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this._rem(key, 1, val, resolve, reject);
         });
     }
 }

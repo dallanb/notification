@@ -1,5 +1,12 @@
 import winston from 'winston';
 
+const prettyJson = winston.format.printf((info) => {
+    if (info.message.constructor === Object) {
+        info.message = JSON.stringify(info.message, null, 4);
+    }
+    return `${info.level}: ${info.message}`;
+});
+
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.json(),
@@ -19,7 +26,10 @@ if (process.env.ENV !== 'production') {
         new winston.transports.Console({
             format: winston.format.combine(
                 winston.format.colorize(),
-                winston.format.simple()
+                winston.format.simple(),
+                winston.format.splat(),
+                winston.format.prettyPrint(),
+                prettyJson
             ),
         })
     );
