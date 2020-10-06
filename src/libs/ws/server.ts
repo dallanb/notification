@@ -61,6 +61,19 @@ class Server {
                 );
                 ws.on('close', () => this._onClose(ws));
             });
+
+            const interval = setInterval(() => {
+                this.wss?.clients.forEach((client) => {
+                    if (!_get(client, ['isAlive'])) return client.terminate();
+
+                    _set(client, ['isAlive'], false);
+                    client.ping();
+                });
+            }, 30000);
+
+            this.wss.on('close', () => {
+                clearInterval(interval);
+            });
             logger.info('WS Server is ready');
         } catch (e) {
             logger.info(e);
@@ -78,6 +91,11 @@ class Server {
         _set(ws, ['user_uuid'], uuid);
         this.pushClientConnection(uuid, socketId);
         this.setSocketById(socketId, ws);
+
+        // handling for broken connections
+        _set(ws, ['isAlive'], true);
+        ws.on('pong', () => this._heartbeat(ws));
+
         this.connectionHandler(ws, { uuid });
     }
 
@@ -95,6 +113,10 @@ class Server {
 
     _generateUUID(): string {
         return uuidv4();
+    }
+
+    _heartbeat(ws: WebSocket): void {
+        _set(ws, ['isAlive'], true);
     }
 
     async sendMessageToClient(uuid: string, message: string): Promise<void> {
