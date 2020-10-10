@@ -1,22 +1,16 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import libs from '../../providers/libs';
+import { Libs } from '../../providers';
 
 class Subscriptions {
     public static async subscribe(req: Request, res: Response): Promise<any> {
         const subscriber = req.header('x-consumer-custom-id');
         const { topic, uuid } = req.body;
-        const subscription = {
-            ctime: +new Date(),
-            topic,
-            uuid,
-            user_uuid: subscriber,
-        };
         try {
-            await libs.pg.none(
-                'insert into subscription(ctime, topic, uuid, user_uuid)' +
-                    'values(${ctime}, ${topic}, ${uuid}, ${user_uuid})',
-                subscription
+            await Libs.pg.query(
+                'INSERT INTO subscription(ctime, topic, uuid, user_uuid)' +
+                    'VALUES($1, $2, $3, $4)',
+                [+new Date(), topic, uuid, subscriber]
             );
             res.json({
                 msg: 'OK',
@@ -34,11 +28,9 @@ class Subscriptions {
         const unsubscriber = req.header('x-consumer-custom-id');
         const { topic, uuid } = req.body;
         try {
-            await libs.pg.none(
-                'delete from subscription where topic = $1 and uuid = $2 and user_uuid = $3',
-                topic,
-                uuid,
-                unsubscriber
+            await Libs.pg.query(
+                'DELETE FROM subscription WHERE topic = $1 AND uuid = $2 AND user_uuid = $3',
+                [topic, uuid, unsubscriber]
             );
             res.json({
                 msg: 'OK',
