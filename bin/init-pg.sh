@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS subscription (
   id SERIAL PRIMARY KEY,
   ctime BIGINT,
   mtime BIGINT,
-  topic VARCHAR(100),
   uuid UUID NOT NULL,
   user_uuid UUID NOT NULL
 );
