@@ -12,10 +12,12 @@ services:
             - ${HUNCHO_DIR}/services/notification/src:/home/app/src
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification
+        depends_on:
+            - notification_db
+            - notification_mongodb
+            - notification_cache
         networks:
             - notification-net
-            - event-net
-            - kong-net
     notification_cache:
         container_name: notification_cache
         image: redis:6
@@ -24,6 +26,20 @@ services:
             - ${HUNCHO_DIR}/data/dev/notification_cache/redis.conf:/usr/local/etc/redis/redis.conf
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification_cache
+        networks:
+            - notification-net
+    notification_db:
+        container_name: notification_db
+        image: postgres:9.6
+        volumes:
+            - ${HUNCHO_DIR}/data/dev/notification_db/data:/var/lib/postgresql/data/
+        env_file:
+            - ${HUNCHO_DIR}/env/dev/.env.notification_db
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U notification"]
+            interval: 10s
+            timeout: 5s
+            retries: 20
         networks:
             - notification-net
     notification_mongodb:
@@ -77,9 +93,3 @@ services:
 networks:
     notification-net:
         driver: bridge
-    event-net:
-        external:
-            name: event_event-net
-    kong-net:
-        external:
-            name: frontend_kong-net

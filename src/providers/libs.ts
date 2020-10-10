@@ -1,6 +1,7 @@
 import {
     KafkaConsumer,
     MongoDB,
+    PgPool,
     RabbitMQProducer,
     RedisClient,
     WSServer,
@@ -13,13 +14,15 @@ import { Account, Auth, Contest, Score, Sport, Wager } from '../services';
 class Libs {
     mongo: any;
     kafka: any;
+    pg: any;
     redis: any;
     rabbitmq: any;
     ws: any;
 
     constructor() {
-        this.mongo = undefined;
         this.kafka = undefined;
+        this.mongo = undefined;
+        this.pg = undefined;
         this.redis = undefined;
         this.rabbitmq = undefined;
         this.ws = undefined;
@@ -51,6 +54,10 @@ class Libs {
             }
         });
         this.kafka.run();
+    }
+
+    async initPG(): Promise<void> {
+        this.pg = PgPool;
     }
 
     async initRabbitMQ(): Promise<void> {

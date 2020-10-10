@@ -17,6 +17,8 @@ class Contest {
             properties: { contest_uuid, participant_uuid },
         });
         switch (key) {
+            case Constants.EVENTS.CONTESTS.CONTEST_READY:
+                break;
             case Constants.EVENTS.CONTESTS.PARTICIPANT_INVITED:
                 notification.recipient = user_uuid;
                 notification.sender = owner_uuid;

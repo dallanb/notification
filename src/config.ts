@@ -13,6 +13,7 @@ declare var process: {
         CACHE_HOST: string;
         CACHE_PORT: number;
         MONGO_URL: string;
+        POSTGRES_URL: string;
     };
 };
 
@@ -32,6 +33,7 @@ class Config {
     CACHE_HOST: string = process.env.CACHE_HOST;
     CACHE_PORT: number = process.env.CACHE_PORT;
     MONGO_URL: string = process.env.MONGO_URL;
+    POSTGRES_URL: string = process.env.POSTGRES_URL;
 }
 
 export default new Config();
