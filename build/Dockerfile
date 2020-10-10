@@ -1,7 +1,6 @@
 ARG NODE_VERSION
 FROM node:${NODE_VERSION}
 
-
 # Create app directory
 WORKDIR /home/app
 
@@ -19,6 +18,11 @@ RUN npm install
 
 COPY src ./src
 COPY build/bin/entrypoint.sh ./build/bin/entrypoint.sh
+
+COPY bin/init-pg.sh ./bin/init-pg.sh
+
+# psql
+RUN apt-get update && apt-get install -y postgresql-client
 
 ## run entrypoint.sh
 ENTRYPOINT ["sh", "./build/bin/entrypoint.sh"]

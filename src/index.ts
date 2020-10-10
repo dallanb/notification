@@ -7,6 +7,7 @@ const run = async () => {
 
     await Libs.initRabbitMQ();
     await Libs.initKafka();
+    await Libs.initPG();
     await Libs.initRedis();
     await Libs.initMongo();
     await Libs.initWS(App.httpServer);

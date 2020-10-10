@@ -22,6 +22,11 @@ RUN npm run build
 
 COPY build/bin/entrypoint.qaw.sh ./build/bin/entrypoint.sh
 
+COPY bin/init-pg.sh ./bin/init-pg.sh
+
+# psql
+RUN apt-get update && apt-get install -y postgresql-client
+
 EXPOSE 3000
 
 ## run entrypoint.sh
