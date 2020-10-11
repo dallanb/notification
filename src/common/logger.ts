@@ -9,7 +9,11 @@ const prettyJson = winston.format.printf((info) => {
 
 const logger = winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.errors({ stack: true }),
+        winston.format.metadata(),
+        winston.format.json()
+    ),
     transports: [new winston.transports.File({ filename: 'logfile.log' })],
 });
 
