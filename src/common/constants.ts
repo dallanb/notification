@@ -13,6 +13,7 @@ const constants = {
             PENDING: 'pending',
         },
         CONTESTS: {
+            CONTEST_CREATED: 'contest_created',
             CONTEST_READY: 'contest_ready',
             PARTICIPANT_INVITED: 'participant_invited',
             PARTICIPANT_ACTIVE: 'participant_active',
