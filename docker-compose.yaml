@@ -51,6 +51,7 @@ services:
             - ${HUNCHO_DIR}/data/dev/notification_mongodb/data:/data/db
             - ${HUNCHO_DIR}/data/dev/notification_home:/home/mongodb # this must be manually created and chown -R 999:999 https://github.com/docker-library/mongo/issues/323
             - ${HUNCHO_DIR}/services/notification/bin/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+            - ${HUNCHO_DIR}/services/notification/bin/reset-mongo.sh:/bin/reset-mongo.sh
         command: [--auth]
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification_mongodb

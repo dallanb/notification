@@ -11,8 +11,7 @@
         "start": "node ./dist/index.js",
         "build": "tsc",
         "tslint": "tslint --project tsconfig.json",
-        "resetDB": "bash ./bin/reset-db.sh",
-        "resetMongoDB": "bash ./bin/reset-mongodb.sh"
+        "resetDB": "bash ./bin/reset-pg.sh"
     },
     "dependencies": {
         "@types/lodash": "^4.14.161",
