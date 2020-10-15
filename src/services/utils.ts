@@ -1,3 +1,4 @@
+import { isEmpty as _isEmpty } from 'lodash';
 import { Libs } from '../providers';
 import { Notification } from '../models';
 import { Constants, logger } from '../common';
@@ -73,6 +74,9 @@ export const rabbitPublish = async (
 ) => {
     try {
         const reply = await Libs.redis.get(recipient);
+        if (_isEmpty(reply)) {
+            return;
+        }
         Libs.rabbitmq.publish(
             rabbitOptions.exchange,
             rabbitOptions.exchangeType,
