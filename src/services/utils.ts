@@ -75,6 +75,7 @@ export const rabbitPublish = async (
     try {
         const reply = await Libs.redis.get(recipient);
         if (_isEmpty(reply)) {
+            logger.info('User not found in cache');
             return;
         }
         Libs.rabbitmq.publish(
