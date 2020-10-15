@@ -21,8 +21,14 @@ COPY build/bin/entrypoint.sh ./build/bin/entrypoint.sh
 
 COPY bin/init-pg.sh ./bin/init-pg.sh
 
+
+COPY bin/reset-pg.sh ./bin/reset-pg.sh
+COPY bin/reset-mongo.sh ./bin/reset-mongo.sh
+
+
+
 # psql
-RUN apt-get update && apt-get install -y postgresql-client
+RUN apt-get update && apt-get install -y postgresql-client netcat
 
 ## run entrypoint.sh
 ENTRYPOINT ["sh", "./build/bin/entrypoint.sh"]
