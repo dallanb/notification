@@ -14,7 +14,7 @@ class Subscriptions {
             res.json({
                 msg: 'OK',
                 data: {
-                    subscribed: query.rowCount > 0,
+                    subscribed: query.rows[0].count > 0,
                 },
             });
         } catch (err) {

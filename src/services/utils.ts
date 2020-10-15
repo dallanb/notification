@@ -1,6 +1,31 @@
+import { isEmpty as _isEmpty } from 'lodash';
 import { Libs } from '../providers';
 import { Notification } from '../models';
 import { Constants, logger } from '../common';
+
+export const pgCreateSubscription = async (uuid: string, user: string) => {
+    try {
+        await Libs.pg.query(
+            'INSERT INTO subscription(ctime, uuid, user_uuid)' +
+                'VALUES($1, $2, $3)',
+            [+new Date(), uuid, user]
+        );
+    } catch (err) {
+        logger.error(err);
+    }
+};
+
+export const pgFetchAllSubscriptions = async (uuid: string) => {
+    try {
+        const query = await Libs.pg.query(
+            'SELECT user_uuid FROM subscription WHERE uuid = $1',
+            [uuid]
+        );
+        return query.rows;
+    } catch (err) {
+        logger.error(err);
+    }
+};
 
 export const wsSendPending = async (recipient: string) => {
     try {
@@ -49,6 +74,10 @@ export const rabbitPublish = async (
 ) => {
     try {
         const reply = await Libs.redis.get(recipient);
+        if (_isEmpty(reply)) {
+            logger.info('User not found in cache');
+            return;
+        }
         Libs.rabbitmq.publish(
             rabbitOptions.exchange,
             rabbitOptions.exchangeType,

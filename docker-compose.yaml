@@ -10,6 +10,8 @@ services:
                 NODE_VERSION: 12
         volumes:
             - ${HUNCHO_DIR}/services/notification/src:/home/app/src
+        ports:
+            - 20000:3000 # make dev ports in the 20000's
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification
         depends_on:
