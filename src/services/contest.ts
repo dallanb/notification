@@ -22,11 +22,12 @@ class Contest {
             topic: Constants.TOPICS.CONTESTS,
         });
         switch (key) {
-            case Constants.EVENTS.CONTESTS.CONTEST_CREATED:
+            case Constants.EVENTS.CONTESTS.CONTEST_CREATED: {
                 await pgCreateSubscription(data.uuid, data.owner_uuid);
                 // no notification needed
                 break;
-            case Constants.EVENTS.CONTESTS.CONTEST_READY:
+            }
+            case Constants.EVENTS.CONTESTS.CONTEST_READY: {
                 const rows = await pgFetchAllSubscriptions(data.uuid);
                 for (const row of rows) {
                     if (row.user_uuid === data.owner_uuid) continue;
@@ -60,7 +61,42 @@ class Contest {
                     );
                 }
                 break;
-            case Constants.EVENTS.CONTESTS.PARTICIPANT_INVITED:
+            }
+            case Constants.EVENTS.CONTESTS.CONTEST_TIMEOUT: {
+                const rows = await pgFetchAllSubscriptions(data.uuid);
+                for (const row of rows) {
+                    notification.recipient = row.user_uuid;
+                    notification.sender = null;
+                    notification.properties = {
+                        contest_uuid: data.uuid,
+                    };
+                    notification.message =
+                        locale.EVENTS.CONTESTS.CONTEST_TIMEOUT;
+
+                    await notification.save();
+                    // WS
+                    wsSendMessage(
+                        notification.recipient,
+                        `${notification.topic}:${notification.key}`,
+                        {
+                            ..._pick(notification, ['message', 'sender']),
+                            ..._pick(notification.properties, ['contest_uuid']),
+                        }
+                    );
+                    // send a total of pending
+                    wsSendPending(notification.recipient);
+                    rabbitPublish(
+                        notification.recipient,
+                        { exchange: 'web', exchangeType: 'direct' },
+                        {
+                            ..._pick(notification, ['message', 'sender']),
+                            ..._pick(notification.properties, ['contest_uuid']),
+                        }
+                    );
+                }
+                break;
+            }
+            case Constants.EVENTS.CONTESTS.PARTICIPANT_INVITED: {
                 await pgCreateSubscription(data.contest_uuid, data.user_uuid);
 
                 notification.recipient = data.user_uuid;
@@ -98,7 +134,8 @@ class Contest {
                     }
                 );
                 break;
-            case Constants.EVENTS.CONTESTS.PARTICIPANT_ACTIVE:
+            }
+            case Constants.EVENTS.CONTESTS.PARTICIPANT_ACTIVE: {
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
                 notification.properties = {
@@ -134,6 +171,7 @@ class Contest {
                     }
                 );
                 break;
+            }
         }
     };
 }
