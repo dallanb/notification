@@ -26,6 +26,7 @@ services:
         volumes:
             - ${HUNCHO_DIR}/data/dev/notification_cache/redis_data:/var/lib/redis
             - ${HUNCHO_DIR}/data/dev/notification_cache/redis.conf:/usr/local/etc/redis/redis.conf
+            - ${HUNCHO_DIR}/services/notification/bin/reset-redis.sh:/bin/reset-redis.sh
         env_file:
             - ${HUNCHO_DIR}/env/dev/.env.notification_cache
         networks:
