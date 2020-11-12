@@ -7,7 +7,8 @@ import {
     pgCreateSubscription,
     pgFetchAllSubscriptions,
     rabbitPublish,
-    wsSendMessage,
+    wsSendMessageToClient,
+    wsSendMessageToTopic,
     wsSendPending,
 } from './utils';
 
@@ -28,41 +29,42 @@ class Contest {
                 break;
             }
             case Constants.EVENTS.CONTESTS.CONTEST_READY: {
+                notification.sender = data.owner_uuid;
+                notification.properties = {
+                    contest_uuid: data.uuid,
+                };
+                notification.message = locale.EVENTS.CONTESTS.CONTEST_READY;
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, ['contest_uuid']),
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
+
                 const rows = await pgFetchAllSubscriptions(data.uuid);
                 for (const row of rows) {
                     if (row.user_uuid === data.owner_uuid) continue;
 
                     notification.recipient = row.user_uuid;
-                    notification.sender = data.owner_uuid;
-                    notification.properties = {
-                        contest_uuid: data.uuid,
-                    };
-                    notification.message = locale.EVENTS.CONTESTS.CONTEST_READY;
 
                     await notification.save();
                     // WS
-                    wsSendMessage(
+                    wsSendMessageToClient(
                         notification.recipient,
-                        `${notification.topic}:${notification.key}`,
-                        {
-                            ..._pick(notification, ['message', 'sender']),
-                            ..._pick(notification.properties, ['contest_uuid']),
-                        }
+                        event,
+                        payload
                     );
                     // send a total of pending
                     wsSendPending(notification.recipient);
                     rabbitPublish(
                         notification.recipient,
                         { exchange: 'web', exchangeType: 'direct' },
-                        {
-                            ..._pick(notification, ['message', 'sender']),
-                            ..._pick(notification.properties, ['contest_uuid']),
-                        }
+                        payload
                     );
                 }
                 break;
             }
-            case Constants.EVENTS.CONTESTS.CONTEST_TIMEOUT: {
+            case Constants.EVENTS.CONTESTS.CONTEST_ACTIVE: {
                 const rows = await pgFetchAllSubscriptions(data.uuid);
                 for (const row of rows) {
                     notification.recipient = row.user_uuid;
@@ -71,11 +73,11 @@ class Contest {
                         contest_uuid: data.uuid,
                     };
                     notification.message =
-                        locale.EVENTS.CONTESTS.CONTEST_TIMEOUT;
+                        locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
 
                     await notification.save();
                     // WS
-                    wsSendMessage(
+                    wsSendMessageToClient(
                         notification.recipient,
                         `${notification.topic}:${notification.key}`,
                         {
@@ -109,7 +111,7 @@ class Contest {
                     locale.EVENTS.CONTESTS.PARTICIPANT_INVITED;
                 await notification.save();
                 // WS
-                wsSendMessage(
+                wsSendMessageToClient(
                     notification.recipient,
                     `${notification.topic}:${notification.key}`,
                     {
@@ -146,7 +148,7 @@ class Contest {
                     locale.EVENTS.CONTESTS.PARTICIPANT_ACTIVE;
                 await notification.save();
                 // WS
-                wsSendMessage(
+                wsSendMessageToClient(
                     notification.recipient,
                     `${notification.topic}:${notification.key}`,
                     {

@@ -1,4 +1,3 @@
-import { logger } from '../../common';
 import WebSocket, { ServerOptions } from 'ws';
 import { Server as HTTPServer } from 'http';
 import httpStatus from 'http-status';
@@ -6,6 +5,7 @@ import { parse } from 'url';
 import { get as _get, set as _set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { RedisClient } from '../index';
+import { logger } from '../../common';
 
 class Server {
     private _wss?: WebSocket.Server;
@@ -83,13 +83,23 @@ class Server {
     _onConnect(ws: WebSocket, request: Request): void {
         // find id's
         const socketId = this._generateUUID();
+        const type = this._getConnectionType(request);
         const uuid = _get(request, ['uuid']);
         // console.log(this.wss?.clients);
 
         // set id's
         _set(ws, ['id'], socketId);
-        _set(ws, ['user_uuid'], uuid);
-        this.pushClientConnection(uuid, socketId);
+        _set(ws, ['uuid'], uuid);
+        _set(ws, ['type'], type);
+
+        switch (type) {
+            case 'notification':
+                this.pushClientConnection(uuid, socketId);
+                break;
+            case 'topic':
+                this.pushTopicConnection(uuid, socketId);
+                break;
+        }
         this.setSocketById(socketId, ws);
 
         // handling for broken connections
@@ -104,19 +114,41 @@ class Server {
     }
 
     _onClose(ws: WebSocket): void {
-        const uuid = _get(ws, ['user_uuid']);
+        const uuid = _get(ws, ['uuid']);
         const socketId = _get(ws, ['id']);
-        this.removeClientConnection(uuid, socketId);
+        const type = _get(ws, ['type']);
+
+        switch (type) {
+            case 'notification':
+                this.removeClientConnection(uuid, socketId);
+                break;
+            case 'topic':
+                this.removeTopicConnection(uuid, socketId);
+                break;
+        }
+
         this.delSocketById(socketId);
         this.closeHandler(ws);
+    }
+
+    _heartbeat(ws: WebSocket): void {
+        _set(ws, ['isAlive'], true);
     }
 
     _generateUUID(): string {
         return uuidv4();
     }
 
-    _heartbeat(ws: WebSocket): void {
-        _set(ws, ['isAlive'], true);
+    _retrieveRequestBaseURL(req: Request) {
+        const host = _get(req, ['headers', 'x-forwarded-host'], null);
+        const endpoint = _get(req, ['url'], '');
+        const url = new URL(endpoint, `http://${host}`);
+        const pathname = url.pathname;
+        return pathname.substring(1);
+    }
+
+    _getConnectionType(req: Request) {
+        return this._retrieveRequestBaseURL(req);
     }
 
     async sendMessageToClient(uuid: string, message: string): Promise<void> {
@@ -124,6 +156,17 @@ class Server {
             const connections = await this.dumpClientConnections(uuid);
             for (const connection of connections) {
                 // dont bother waiting
+                this.sendMessage(connection, message);
+            }
+        } catch (err) {
+            logger.error(err);
+        }
+    }
+
+    async sendMessageToTopic(uuid: string, message: string): Promise<void> {
+        try {
+            const connections = await this.dumpTopicConnections(uuid);
+            for (const connection of connections) {
                 this.sendMessage(connection, message);
             }
         } catch (err) {
@@ -147,8 +190,16 @@ class Server {
         return await RedisClient.push(`clients:${uuid}`, socketId);
     }
 
+    async pushTopicConnection(uuid: string, socketId: string): Promise<void> {
+        return await RedisClient.push(`topics:${uuid}`, socketId);
+    }
+
     async dumpClientConnections(uuid: string): Promise<string[]> {
         return await RedisClient.range(`clients:${uuid}`);
+    }
+
+    async dumpTopicConnections(uuid: string): Promise<string[]> {
+        return await RedisClient.range(`topics:${uuid}`);
     }
 
     async removeClientConnection(
@@ -156,6 +207,9 @@ class Server {
         socketId: string
     ): Promise<void> {
         return await RedisClient.rem(`clients:${uuid}`, socketId);
+    }
+    async removeTopicConnection(uuid: string, socketId: string): Promise<void> {
+        return await RedisClient.rem(`topics:${uuid}`, socketId);
     }
 
     getSocketById(id: string): WebSocket | undefined {

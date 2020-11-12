@@ -46,7 +46,7 @@ export const wsSendPending = async (recipient: string) => {
     }
 };
 
-export const wsSendMessage = (
+export const wsSendMessageToClient = (
     recipient: string,
     event: string,
     payload: any
@@ -63,7 +63,26 @@ export const wsSendMessage = (
         logger.error(err);
     }
 };
+export const wsSendMessageToTopic = (
+    topic: string,
+    event: string,
+    payload: any
+) => {
+    try {
+        Libs.ws.sendMessageToTopic(
+            topic,
+            JSON.stringify({
+                event,
+                ...payload,
+            })
+        );
+    } catch (err) {
+        logger.error(err);
+    }
+};
 
+// I dont think i need to send push notifications for a topic event
+// but leaving note here just a potential reminder
 export const rabbitPublish = async (
     recipient: string,
     rabbitOptions: {
