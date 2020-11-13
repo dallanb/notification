@@ -155,7 +155,7 @@ class Contest {
                     ]),
                 };
                 // WS
-                wsSendMessageToTopic(notification.recipient, event, payload);
+                wsSendMessageToTopic(data.contest_uuid, event, payload);
                 wsSendMessageToClient(notification.recipient, event, payload);
                 // send a total of pending
                 wsSendPending(notification.recipient);
