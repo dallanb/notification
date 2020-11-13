@@ -63,35 +63,35 @@ class Contest {
                 break;
             }
             case Constants.EVENTS.CONTESTS.CONTEST_ACTIVE: {
+                notification.sender = null;
+                notification.properties = {
+                    contest_uuid: data.uuid,
+                };
+                notification.message = locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, ['contest_uuid']),
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
+
                 const rows = await pgFetchAllSubscriptions(data.uuid);
                 for (const row of rows) {
                     notification.recipient = row.user_uuid;
-                    notification.sender = null;
-                    notification.properties = {
-                        contest_uuid: data.uuid,
-                    };
-                    notification.message =
-                        locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
 
                     await notification.save();
                     // WS
                     wsSendMessageToClient(
                         notification.recipient,
-                        `${notification.topic}:${notification.key}`,
-                        {
-                            ..._pick(notification, ['message', 'sender']),
-                            ..._pick(notification.properties, ['contest_uuid']),
-                        }
+                        event,
+                        payload
                     );
                     // send a total of pending
                     wsSendPending(notification.recipient);
                     rabbitPublish(
                         notification.recipient,
                         { exchange: 'web', exchangeType: 'direct' },
-                        {
-                            ..._pick(notification, ['message', 'sender']),
-                            ..._pick(notification.properties, ['contest_uuid']),
-                        }
+                        payload
                     );
                 }
                 break;
@@ -145,30 +145,24 @@ class Contest {
                 notification.message =
                     locale.EVENTS.CONTESTS.PARTICIPANT_ACTIVE;
                 await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'participant_uuid',
+                    ]),
+                };
                 // WS
-                wsSendMessageToClient(
-                    notification.recipient,
-                    `${notification.topic}:${notification.key}`,
-                    {
-                        ..._pick(notification, ['message', 'sender']),
-                        ..._pick(notification.properties, [
-                            'contest_uuid',
-                            'participant_uuid',
-                        ]),
-                    }
-                );
+                wsSendMessageToTopic(notification.recipient, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
                 // send a total of pending
                 wsSendPending(notification.recipient);
                 rabbitPublish(
                     notification.recipient,
                     { exchange: 'web', exchangeType: 'direct' },
-                    {
-                        ..._pick(notification, ['message', 'sender']),
-                        ..._pick(notification.properties, [
-                            'contest_uuid',
-                            'participant_uuid',
-                        ]),
-                    }
+                    payload
                 );
                 break;
             }
