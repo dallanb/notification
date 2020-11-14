@@ -6,6 +6,9 @@ const constants = {
             CONTEST_READY: 'Contest Ready!',
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
         },
+        SCORES: {
+            STROKE_UPDATE: 'Strokes Updated!',
+        },
     },
 };
 
