@@ -22,16 +22,16 @@ class Score {
                 notification.recipient = null;
                 notification.message = locale.EVENTS.SCORES;
                 notification.properties = {
-                    contest_uuid: data.contest_uuid,
                     sheet_uuid: data.sheet_uuid,
+                    participant_uuid: data.participant_uuid,
                     strokes: data.strokes,
                 };
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
                     ..._pick(notification.properties, [
-                        'contest_uuid',
                         'sheet_uuid',
+                        'participant_uuid',
                         'strokes',
                     ]),
                 };
