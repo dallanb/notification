@@ -25,6 +25,7 @@ class Score {
                     sheet_uuid: data.sheet_uuid,
                     participant_uuid: data.participant_uuid,
                     strokes: data.strokes,
+                    score: data.score
                 };
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
@@ -33,6 +34,7 @@ class Score {
                         'sheet_uuid',
                         'participant_uuid',
                         'strokes',
+                        'score'
                     ]),
                 };
                 wsSendMessageToTopic(data.contest_uuid, event, payload);
