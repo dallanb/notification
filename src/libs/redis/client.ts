@@ -22,12 +22,16 @@ class Client {
     }
 
     init() {
-        return new Promise((resolve, reject) => {
+        new Promise(
+            (
+                resolve: (value?: any) => void,
+                reject: (reason?: any) => void
+            ) => {
             this.connect(resolve, reject);
         });
     }
 
-    connect(resolve: () => void, reject: () => void): void {
+    connect(resolve: (value?: any) => void, reject: (reason?: any) => void): void {
         this.client = redis.createClient(this._clientOptions);
 
         this.client.on('connect', () => {
