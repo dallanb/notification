@@ -43,8 +43,6 @@ class Contest {
 
                 const rows = await pgFetchAllSubscriptions(data.uuid);
                 for (const row of rows) {
-                    if (row.user_uuid === data.owner_uuid) continue;
-
                     notification.recipient = row.user_uuid;
 
                     await notification.save();
@@ -157,7 +155,7 @@ class Contest {
                     ]),
                 };
                 // WS
-                wsSendMessageToTopic(notification.recipient, event, payload);
+                wsSendMessageToTopic(data.contest_uuid, event, payload);
                 wsSendMessageToClient(notification.recipient, event, payload);
                 // send a total of pending
                 wsSendPending(notification.recipient);

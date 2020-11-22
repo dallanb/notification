@@ -19,6 +19,9 @@ const constants = {
             PARTICIPANT_INVITED: 'participant_invited',
             PARTICIPANT_ACTIVE: 'participant_active',
         },
+        SCORES: {
+            STROKE_UPDATE: 'stroke_update',
+        },
     },
 };
 
