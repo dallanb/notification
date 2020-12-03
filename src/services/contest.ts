@@ -33,7 +33,8 @@ class Contest {
                 notification.properties = {
                     contest_uuid: data.uuid,
                 };
-                notification.message = locale.EVENTS.CONTESTS.CONTEST_READY;
+                notification.message =
+                    data.message || locale.EVENTS.CONTESTS.CONTEST_READY;
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
@@ -67,7 +68,8 @@ class Contest {
                 notification.properties = {
                     contest_uuid: data.uuid,
                 };
-                notification.message = locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
+                notification.message =
+                    data.message || locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
