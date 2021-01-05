@@ -25,6 +25,9 @@ const constants = {
             MEMBER_INVITED: 'member_invited',
             MEMBER_ACTIVE: 'member_active',
         },
+        LEAGUES: {
+            LEAGUE_CREATED: 'league_created',
+        },
         SCORES: {
             STROKE_UPDATE: 'stroke_update',
         },
