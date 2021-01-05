@@ -9,7 +9,15 @@ import {
 import { logger, Constants } from '../common';
 import { Server } from 'http';
 import { Message } from 'kafka-node';
-import { Account, Auth, Contest, Score, Sport, Wager } from '../services';
+import {
+    Account,
+    Auth,
+    Contest,
+    Member,
+    Score,
+    Sport,
+    Wager,
+} from '../services';
 
 class Libs {
     mongo: any;
@@ -39,6 +47,9 @@ class Libs {
                     break;
                 case Constants.TOPICS.CONTESTS:
                     Contest.handleEvent(key, value);
+                    break;
+                case Constants.TOPICS.MEMBERS:
+                    Member.handleEvent(key, value);
                     break;
                 case Constants.TOPICS.SCORES:
                     Score.handleEvent(key, value);
