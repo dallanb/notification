@@ -3,6 +3,7 @@ const constants = {
         AUTH: 'auth',
         ACCOUNTS: 'accounts',
         CONTESTS: 'contests',
+        LEAGUES: 'leagues',
         MEMBERS: 'members',
         SCORES: 'scores',
         SPORTS: 'sports',
