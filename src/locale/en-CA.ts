@@ -6,6 +6,7 @@ const constants = {
             PARTICIPANT_COMPLETED: 'Contest Marked Completed!',
             CONTEST_READY: 'Contest Ready!',
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
+            CONTEST_COMPLETED: 'Contest is Completed!',
         },
         MEMBERS: {
             MEMBER_INVITED: 'League Invite!',

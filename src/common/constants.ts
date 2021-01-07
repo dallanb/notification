@@ -18,6 +18,7 @@ const constants = {
             CONTEST_CREATED: 'contest_created',
             CONTEST_READY: 'contest_ready',
             CONTEST_ACTIVE: 'contest_active',
+            CONTEST_COMPLETED: 'contest_completed',
             PARTICIPANT_INVITED: 'participant_invited',
             PARTICIPANT_ACTIVE: 'participant_active',
             PARTICIPANT_COMPLETED: 'participant_completed',
