@@ -20,6 +20,7 @@ const constants = {
             CONTEST_ACTIVE: 'contest_active',
             PARTICIPANT_INVITED: 'participant_invited',
             PARTICIPANT_ACTIVE: 'participant_active',
+            PARTICIPANT_COMPLETED: 'participant_completed',
         },
         MEMBERS: {
             MEMBER_INVITED: 'member_invited',
