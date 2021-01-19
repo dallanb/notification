@@ -83,9 +83,14 @@ class Notifications {
         const { body: $set } = req;
 
         try {
-            const notification = await Notification.findByIdAndUpdate(_id, {
-                $set,
-            }).exec();
+            const notification = await Notification.findByIdAndUpdate(
+                _id,
+
+                {
+                    $set,
+                },
+                { new: true }
+            ).exec();
 
             if (recipient) {
                 await wsSendPending(recipient);
