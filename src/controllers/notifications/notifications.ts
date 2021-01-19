@@ -6,8 +6,15 @@ import { wsSendPending } from '../../services/utils';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
-        const { page = 1, per_page = 10, sort_by = 'ctime.desc'}: any = req.query;
+        const {
+            page = 1,
+            per_page = 10,
+            sort_by = 'ctime.desc',
+        }: any = req.query;
         const recipient = req.header('x-consumer-custom-id');
+        const sortSplit = sort_by.split['.'];
+        const sortKey = sortSplit[0];
+        const sortOrder = sortSplit[1] === 'asc' ? 1 : -1;
         try {
             const notifications = await Notification.paginate(
                 {
@@ -16,6 +23,9 @@ class Notifications {
                 {
                     page,
                     limit: per_page,
+                    sort: {
+                        [sortKey]: sortOrder,
+                    },
                 }
             );
 
