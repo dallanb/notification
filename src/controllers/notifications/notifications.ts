@@ -20,6 +20,7 @@ class Notifications {
             const notifications = await Notification.paginate(
                 {
                     recipient,
+                    archived: false,
                 },
                 {
                     page,
@@ -59,6 +60,7 @@ class Notifications {
             const count = await Notification.count({
                 recipient,
                 read: false,
+                archived: false,
             }).exec();
 
             res.json({
