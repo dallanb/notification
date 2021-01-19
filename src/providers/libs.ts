@@ -13,6 +13,7 @@ import {
     Account,
     Auth,
     Contest,
+    League,
     Member,
     Score,
     Sport,
@@ -47,6 +48,9 @@ class Libs {
                     break;
                 case Constants.TOPICS.CONTESTS:
                     Contest.handleEvent(key, value);
+                    break;
+                case Constants.TOPICS.LEAGUES:
+                    League.handleEvent(key, value);
                     break;
                 case Constants.TOPICS.MEMBERS:
                     Member.handleEvent(key, value);
