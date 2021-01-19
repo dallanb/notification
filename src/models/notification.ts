@@ -34,13 +34,18 @@ const notification: mongoose.Schema = new mongoose.Schema(
             required: false,
             default: false,
         },
-        properties: {}
+        archived: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        properties: {},
     },
     {
         timestamps: {
             createdAt: 'ctime',
             updatedAt: 'mtime',
-        }
+        },
     }
 );
 

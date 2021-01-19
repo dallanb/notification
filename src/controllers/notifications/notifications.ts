@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { get as _get } from 'lodash';
 
 import { Notification } from '../../models';
 import { wsSendPending } from '../../services/utils';
@@ -12,20 +13,19 @@ class Notifications {
             sort_by = 'ctime.desc',
         }: any = req.query;
         const recipient = req.header('x-consumer-custom-id');
-        const sortSplit = sort_by.split['.'];
-        const sortKey = sortSplit[0];
-        const sortOrder = sortSplit[1] === 'asc' ? 1 : -1;
         try {
+            const sortSplit = sort_by.split['.'];
+            const sortKey = _get(sortSplit, [0], 'ctime');
+            const sortOrder = _get(sortSplit, [1], 'desc') === 'asc' ? 1 : -1;
             const notifications = await Notification.paginate(
                 {
                     recipient,
+                    archived: false,
                 },
                 {
                     page,
                     limit: per_page,
-                    sort: {
-                        [sortKey]: sortOrder,
-                    },
+                    sort: { [sortKey]: sortOrder },
                 }
             );
 
@@ -60,6 +60,7 @@ class Notifications {
             const count = await Notification.count({
                 recipient,
                 read: false,
+                archived: false,
             }).exec();
 
             res.json({
