@@ -6,6 +6,10 @@ const constants = {
             CONTEST_READY: 'Contest Ready!',
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
         },
+        MEMBERS: {
+            MEMBER_INVITED: 'League Invite!',
+            MEMBER_ACTIVE: 'Member Invite Accepted!',
+        },
         SCORES: {
             STROKE_UPDATE: 'Strokes Updated!',
         },

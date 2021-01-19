@@ -6,7 +6,7 @@ import { wsSendPending } from '../../services/utils';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
-        const { page = 1, per_page = 10 }: any = req.query;
+        const { page = 1, per_page = 10, sort_by = 'ctime.desc'}: any = req.query;
         const recipient = req.header('x-consumer-custom-id');
         try {
             const notifications = await Notification.paginate(
