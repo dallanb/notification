@@ -32,13 +32,17 @@ class Contest {
                 notification.sender = data.owner_uuid;
                 notification.properties = {
                     contest_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
                 };
                 notification.message =
                     data.message || locale.EVENTS.CONTESTS.CONTEST_READY;
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
-                    ..._pick(notification.properties, ['contest_uuid']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'league_uuid',
+                    ]),
                 };
                 wsSendMessageToTopic(data.uuid, event, payload);
 
@@ -67,13 +71,56 @@ class Contest {
                 notification.sender = null;
                 notification.properties = {
                     contest_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
                 };
                 notification.message =
                     data.message || locale.EVENTS.CONTESTS.CONTEST_ACTIVE;
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
-                    ..._pick(notification.properties, ['contest_uuid']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
+
+                const rows = await pgFetchAllSubscriptions(data.uuid);
+                for (const row of rows) {
+                    notification.recipient = row.user_uuid;
+
+                    await notification.save();
+                    // WS
+                    wsSendMessageToClient(
+                        notification.recipient,
+                        event,
+                        payload
+                    );
+                    // send a total of pending
+                    wsSendPending(notification.recipient);
+                    rabbitPublish(
+                        notification.recipient,
+                        { exchange: 'web', exchangeType: 'direct' },
+                        payload
+                    );
+                }
+                break;
+            }
+            case Constants.EVENTS.CONTESTS.CONTEST_COMPLETED: {
+                notification.sender = null;
+                notification.properties = {
+                    contest_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message || locale.EVENTS.CONTESTS.CONTEST_COMPLETED;
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'league_uuid',
+                    ]),
                 };
                 wsSendMessageToTopic(data.uuid, event, payload);
 
@@ -106,6 +153,7 @@ class Contest {
                 notification.properties = {
                     contest_uuid: data.contest_uuid,
                     participant_uuid: data.participant_uuid,
+                    league_uuid: data.league_uuid,
                 };
                 notification.message =
                     data.message || locale.EVENTS.CONTESTS.PARTICIPANT_INVITED;
@@ -119,6 +167,7 @@ class Contest {
                         ..._pick(notification.properties, [
                             'contest_uuid',
                             'participant_uuid',
+                            'league_uuid',
                         ]),
                     }
                 );
@@ -132,6 +181,7 @@ class Contest {
                         ..._pick(notification.properties, [
                             'contest_uuid',
                             'participant_uuid',
+                            'league_uuid',
                         ]),
                     }
                 );
@@ -143,6 +193,7 @@ class Contest {
                 notification.properties = {
                     contest_uuid: data.contest_uuid,
                     participant_uuid: data.participant_uuid,
+                    league_uuid: data.league_uuid,
                 };
                 notification.message =
                     data.message || locale.EVENTS.CONTESTS.PARTICIPANT_ACTIVE;
@@ -154,6 +205,41 @@ class Contest {
                     ..._pick(notification.properties, [
                         'contest_uuid',
                         'participant_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                // WS
+                wsSendMessageToTopic(data.contest_uuid, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
+                // send a total of pending
+                wsSendPending(notification.recipient);
+                rabbitPublish(
+                    notification.recipient,
+                    { exchange: 'web', exchangeType: 'direct' },
+                    payload
+                );
+                break;
+            }
+            case Constants.EVENTS.CONTESTS.PARTICIPANT_COMPLETED: {
+                notification.recipient = data.owner_uuid;
+                notification.sender = data.user_uuid;
+                notification.properties = {
+                    contest_uuid: data.contest_uuid,
+                    participant_uuid: data.participant_uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message ||
+                    locale.EVENTS.CONTESTS.PARTICIPANT_COMPLETED;
+                await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'participant_uuid',
+                        'league_uuid',
                     ]),
                 };
                 // WS

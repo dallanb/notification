@@ -1,21 +1,31 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { get as _get } from 'lodash';
 
 import { Notification } from '../../models';
 import { wsSendPending } from '../../services/utils';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
-        const { page = 1, per_page = 10 }: any = req.query;
+        const {
+            page = 1,
+            per_page = 10,
+            sort_by = 'ctime.desc',
+        }: any = req.query;
         const recipient = req.header('x-consumer-custom-id');
         try {
+            const sortSplit = sort_by.split['.'];
+            const sortKey = _get(sortSplit, [0], 'ctime');
+            const sortOrder = _get(sortSplit, [1], 'desc') === 'asc' ? 1 : -1;
             const notifications = await Notification.paginate(
                 {
                     recipient,
+                    archived: false,
                 },
                 {
                     page,
                     limit: per_page,
+                    sort: { [sortKey]: sortOrder },
                 }
             );
 
@@ -50,6 +60,7 @@ class Notifications {
             const count = await Notification.count({
                 recipient,
                 read: false,
+                archived: false,
             }).exec();
 
             res.json({
@@ -73,9 +84,14 @@ class Notifications {
         const { body: $set } = req;
 
         try {
-            const notification = await Notification.findByIdAndUpdate(_id, {
-                $set,
-            }).exec();
+            const notification = await Notification.findByIdAndUpdate(
+                _id,
+
+                {
+                    $set,
+                },
+                { new: true }
+            ).exec();
 
             if (recipient) {
                 await wsSendPending(recipient);

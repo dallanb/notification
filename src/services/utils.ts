@@ -33,6 +33,7 @@ export const wsSendPending = async (recipient: string) => {
         const count = await Notification.count({
             recipient,
             read: false,
+            archived: false,
         }).exec();
         await Libs.ws.sendMessageToClient(
             recipient,
