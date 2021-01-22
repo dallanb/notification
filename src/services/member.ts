@@ -21,7 +21,7 @@ class Member {
             topic: Constants.TOPICS.MEMBERS,
         });
         switch (key) {
-            case Constants.EVENTS.MEMBERS.MEMBER_INVITED: {
+            case Constants.EVENTS.MEMBERS.MEMBER_PENDING: {
                 await pgCreateSubscription(data.league_uuid, data.user_uuid);
 
                 notification.recipient = data.user_uuid;
@@ -31,7 +31,7 @@ class Member {
                     league_uuid: data.league_uuid,
                 };
                 notification.message =
-                    data.message || locale.EVENTS.MEMBERS.MEMBER_INVITED;
+                    data.message || locale.EVENTS.MEMBERS.MEMBER_PENDING;
                 await notification.save();
                 // WS
                 wsSendMessageToClient(
