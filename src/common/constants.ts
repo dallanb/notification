@@ -23,12 +23,11 @@ const constants = {
             PARTICIPANT_ACTIVE: 'participant_active',
             PARTICIPANT_COMPLETED: 'participant_completed',
         },
-        MEMBERS: {
-            MEMBER_PENDING: 'member_pending',
-            MEMBER_ACTIVE: 'member_active',
-        },
+        MEMBERS: {},
         LEAGUES: {
             LEAGUE_CREATED: 'league_created',
+            MEMBER_PENDING: 'member_pending',
+            MEMBER_ACTIVE: 'member_active',
         },
         SCORES: {
             STROKE_UPDATE: 'stroke_update',

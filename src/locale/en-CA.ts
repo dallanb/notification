@@ -8,7 +8,7 @@ const constants = {
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
             CONTEST_COMPLETED: 'Contest is Completed!',
         },
-        MEMBERS: {
+        LEAGUES: {
             MEMBER_PENDING: 'League Invite!',
             MEMBER_ACTIVE: 'Member Invite Accepted!',
         },
