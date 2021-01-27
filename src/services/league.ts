@@ -28,7 +28,7 @@ class League {
                 break;
             }
             case Constants.EVENTS.LEAGUES.MEMBER_CREATED: {
-                await pgCreateSubscription(data.league_uuid, data.user_uuid);
+                // no notification needed
                 break;
             }
             case Constants.EVENTS.LEAGUES.MEMBER_PENDING: {
@@ -69,6 +69,7 @@ class League {
                 break;
             }
             case Constants.EVENTS.LEAGUES.MEMBER_ACTIVE: {
+                await pgCreateSubscription(data.league_uuid, data.user_uuid);
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
                 if (notification.recipient !== notification.sender) {
