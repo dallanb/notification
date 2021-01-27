@@ -1,6 +1,14 @@
 import { Message } from 'kafka-node';
+import { pick as _pick } from 'lodash';
 import { Constants, logger } from '../common';
 import { Notification } from '../models';
+import {
+    pgCreateSubscription,
+    rabbitPublish,
+    wsSendMessageToClient,
+    wsSendPending,
+} from './utils';
+import locale from '../locale/en-CA';
 
 class Member {
     handleEvent = async (key: Message['key'], value: Message['value']) => {
@@ -8,6 +16,18 @@ class Member {
         logger.info(value);
         const data =
             typeof value === 'string' ? JSON.parse(value) : value.toString();
+        const notification = new Notification({
+            key,
+            topic: Constants.TOPICS.MEMBERS,
+        });
+        switch (key) {
+            case Constants.EVENTS.MEMBERS.MEMBER_PENDING: {
+                break;
+            }
+            case Constants.EVENTS.MEMBERS.MEMBER_ACTIVE: {
+                break;
+            }
+        }
     };
 }
 

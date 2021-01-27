@@ -24,17 +24,18 @@ class League {
         });
         switch (key) {
             case Constants.EVENTS.LEAGUES.LEAGUE_CREATED: {
-                await pgCreateSubscription(data.uuid, data.owner_uuid);
                 // no notification needed
                 break;
             }
-            case Constants.EVENTS.LEAGUES.MEMBER_PENDING: {
+            case Constants.EVENTS.LEAGUES.MEMBER_CREATED: {
                 await pgCreateSubscription(data.league_uuid, data.user_uuid);
-
+                break;
+            }
+            case Constants.EVENTS.LEAGUES.MEMBER_PENDING: {
                 notification.recipient = data.user_uuid;
                 notification.sender = data.owner_uuid;
                 notification.properties = {
-                    member_uuid: data.uuid, // TODO: THIS IS PROBABLY AN ISSUE HERE!
+                    league_member_uuid: data.uuid,
                     league_uuid: data.league_uuid,
                 };
                 notification.message =
@@ -47,7 +48,7 @@ class League {
                     {
                         ..._pick(notification, ['message', 'sender']),
                         ..._pick(notification.properties, [
-                            'member_uuid',
+                            'league_member_uuid',
                             'league_uuid',
                         ]),
                     }
@@ -60,7 +61,7 @@ class League {
                     {
                         ..._pick(notification, ['message', 'sender']),
                         ..._pick(notification.properties, [
-                            'member_uuid',
+                            'league_member_uuid',
                             'league_uuid',
                         ]),
                     }
@@ -71,7 +72,7 @@ class League {
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
                 notification.properties = {
-                    member_uuid: data.uuid, // TODO: this is not present (maybe make this league_member_uuid)
+                    league_member_uuid: data.uuid,
                     league_uuid: data.league_uuid,
                 };
                 notification.message =
@@ -82,7 +83,7 @@ class League {
                 const payload = {
                     ..._pick(notification, ['message', 'sender']),
                     ..._pick(notification.properties, [
-                        'member_uuid',
+                        'league_member_uuid',
                         'league_uuid',
                     ]),
                 };
