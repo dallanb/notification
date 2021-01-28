@@ -1,7 +1,6 @@
 import WebSocket, { ServerOptions } from 'ws';
 import { Server as HTTPServer } from 'http';
 import httpStatus from 'http-status';
-import { parse } from 'url';
 import { get as _get, set as _set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { RedisClient } from '../index';
@@ -28,8 +27,11 @@ class Server {
         this._serverOptions = {
             server,
             verifyClient: (info, cb) => {
-                const query = parse(_get(info, ['req', 'url'], ''), true).query;
-                const uuid = _get(query, ['uuid']);
+                const uuid = _get(info, [
+                    'req',
+                    'headers',
+                    'x-consumer-custom-id',
+                ]);
                 if (!uuid) {
                     cb(false, httpStatus.UNAUTHORIZED, httpStatus[404]);
                 }
