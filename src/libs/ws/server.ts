@@ -164,7 +164,7 @@ class Server {
                 uuid = _get(req, ['user'], undefined);
                 break;
             case 'topic':
-                const query = parse(_get(req, ['req', 'url'], ''), true).query;
+                const query = parse(_get(req, ['url'], ''), true).query;
                 uuid = _get(query, ['uuid'], undefined);
                 break;
         }
@@ -228,6 +228,7 @@ class Server {
     ): Promise<void> {
         return await RedisClient.rem(`clients:${uuid}`, socketId);
     }
+
     async removeTopicConnection(uuid: string, socketId: string): Promise<void> {
         return await RedisClient.rem(`topics:${uuid}`, socketId);
     }
