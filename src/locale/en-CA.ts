@@ -9,6 +9,11 @@ const constants = {
             CONTEST_COMPLETED: 'Contest is Completed!',
         },
         MEMBERS: {
+            MEMBER_PENDING: '',
+            MEMBER_ACTIVE: '',
+        },
+        LEAGUES: {
+            MEMBER_CREATED: 'League Invite!',
             MEMBER_PENDING: 'League Invite!',
             MEMBER_ACTIVE: 'Member Invite Accepted!',
         },
