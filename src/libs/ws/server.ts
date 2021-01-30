@@ -3,6 +3,7 @@ import { Server as HTTPServer } from 'http';
 import httpStatus from 'http-status';
 import { get as _get, set as _set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { parse } from 'url';
 import { RedisClient } from '../index';
 import { logger } from '../../common';
 
@@ -35,7 +36,7 @@ class Server {
                 if (!uuid) {
                     cb(false, httpStatus.UNAUTHORIZED, httpStatus[404]);
                 }
-                _set(info, ['req', 'uuid'], uuid);
+                _set(info, ['req', 'user'], uuid);
                 cb(true);
             },
         };
@@ -86,8 +87,11 @@ class Server {
         // find id's
         const socketId = this._generateUUID();
         const type = this._getConnectionType(request);
-        const uuid = _get(request, ['uuid']);
-        // console.log(this.wss?.clients);
+        const uuid = this._getUUIDByTopic(type, request);
+
+        if (!uuid) {
+            throw new Error(`Invalid uuid, cannot connect`);
+        }
 
         // set id's
         _set(ws, ['id'], socketId);
@@ -151,6 +155,20 @@ class Server {
 
     _getConnectionType(req: Request) {
         return this._retrieveRequestBaseURL(req);
+    }
+
+    _getUUIDByTopic(topic: string, req: Request): string | undefined {
+        let uuid = undefined;
+        switch (topic) {
+            case 'notification':
+                uuid = _get(req, ['user'], undefined);
+                break;
+            case 'topic':
+                const query = parse(_get(req, ['req', 'url'], ''), true).query;
+                uuid = _get(query, ['uuid'], undefined);
+                break;
+        }
+        return uuid;
     }
 
     async sendMessageToClient(uuid: string, message: string): Promise<void> {
