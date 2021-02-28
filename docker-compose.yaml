@@ -4,74 +4,105 @@ services:
     notification:
         container_name: notification
         build:
-            context: ${HUNCHO_DIR}/services/notification
-            dockerfile: ${HUNCHO_DIR}/services/notification/build/Dockerfile
+            context: .
+            dockerfile: build/Dockerfile
             args:
                 NODE_VERSION: 12
+        restart: on-failure
         volumes:
             - ${HUNCHO_DIR}/services/notification/src:/home/app/src
-        ports:
-            - 20000:3000 # make dev ports in the 20000's
+            - ${HUNCHO_DIR}/services/notification/test:/home/app/test
+            - ${HUNCHO_DIR}/services/notification/package.json:/home/app/package.json
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification
+            - env/.env.notification
+        healthcheck:
+            test: curl --fail -s notification:3000/ping || exit 1
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        ports:
+            - 20000:3000
         depends_on:
-            - notification_db
-            - notification_mongodb
             - notification_cache
+            - notification_db
+            - notification_kafka
+            - notification_mongodb
+            - notification_zookeeper
         networks:
-            - notification-net
+            - app-net
     notification_cache:
         container_name: notification_cache
         image: redis:6
+        restart: unless-stopped
         volumes:
-            - ${HUNCHO_DIR}/data/dev/notification_cache/redis_data:/var/lib/redis
-            - ${HUNCHO_DIR}/data/dev/notification_cache/redis.conf:/usr/local/etc/redis/redis.conf
-            - ${HUNCHO_DIR}/services/notification/bin/reset-redis.sh:/bin/reset-redis.sh
+            - cache_data:/var/libs/redis
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification_cache
+            - env/.env.notification_cache
+        healthcheck:
+            test: [ "CMD", "redis-cli","ping" ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
         networks:
-            - notification-net
+            - app-net
     notification_db:
         container_name: notification_db
         image: postgres:9.6
         volumes:
-            - ${HUNCHO_DIR}/data/dev/notification_db/data:/var/lib/postgresql/data/
+            - db_data:/var/lib/postgresql/data/
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification_db
+            - env/.env.notification_db
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U notification"]
+            test: [ "CMD-SHELL", "pg_isready -U notification" ]
             interval: 10s
             timeout: 5s
             retries: 20
         networks:
-            - notification-net
+            - app-net
+    notification_kafka:
+        container_name: notification_kafka
+        image: wurstmeister/kafka:latest
+        restart: on-failure
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        env_file:
+            - env/.env.notification_kafka
+        depends_on:
+            - notification_zookeeper
+        networks:
+            - app-net
     notification_mongodb:
         container_name: notification_mongodb
         image: mongo:3.6
         volumes:
-            - ${HUNCHO_DIR}/data/dev/notification_mongodb/data:/data/db
-            - ${HUNCHO_DIR}/data/dev/notification_home:/home/mongodb # this must be manually created and chown -R 999:999 https://github.com/docker-library/mongo/issues/323
+            - mongo_data:/data/db
+            - mongo_home:/home/mongodb # this must be manually created and chown'd to 999 https://github.com/docker-library/mongo/issues/323
             - ${HUNCHO_DIR}/services/notification/bin/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
             - ${HUNCHO_DIR}/services/notification/bin/reset-mongo.sh:/bin/reset-mongo.sh
-        command: [--auth]
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification_mongodb
+            - env/.env.notification_mongodb
         networks:
-            - notification-net
-    notification_proxy:
-        container_name: notification_proxy
-        build:
-            context: ${HUNCHO_DIR}/services/notification/proxy
-            dockerfile: ${HUNCHO_DIR}/services/notification/proxy/build/Dockerfile
+            - app-net
+    notification_rabbitmq:
+        container_name: notification_rabbitmq
+        image: rabbitmq:3-management-alpine
         restart: on-failure
         volumes:
-            - ./statics/.:/usr/share/nginx/
-        ports:
-            - 80:80
-        depends_on:
-            - notification
+            - rabbitmq_data/:/var/lib/rabbitmq/
+        env_file:
+            - env/.env.notification_rabbitmq
+#        ports:
+#            - 5672:5672
         networks:
-            - notification-net
+            - app-net
+    notification_zookeeper:
+        container_name: notification_zookeeper
+        image: wurstmeister/zookeeper:latest
+        restart: on-failure
+        env_file:
+            - env/.env.notification_zookeeper
+        networks:
+            - app-net
     mongo-express:
         container_name: mongo-express
         image: mongo-express:latest
@@ -79,9 +110,9 @@ services:
         ports:
             - 8081:8081
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification-mongo-express
+            - env/.env.notification_mongo-express
         networks:
-            - notification-net
+            - app-net
     redis-commander:
         container_name: redis-commander
         image: rediscommander/redis-commander:latest
@@ -89,11 +120,18 @@ services:
         ports:
             - 8082:8081
         env_file:
-            - ${HUNCHO_DIR}/env/dev/.env.notification-redis-commander
+            - env/.env.notification_redis-commander
         depends_on:
             - notification_cache
         networks:
-            - notification-net
+            - app-net
+volumes:
+    cache_data:
+    db_data:
+    mongo_data:
+    mongo_home:
+    rabbitmq_data:
 networks:
-    notification-net:
+    app-net:
         driver: bridge
+

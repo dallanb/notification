@@ -25,8 +25,12 @@ class DB {
             logger.error('Connection Error: ', err)
         );
         this.db.on('open', () => logger.info('Connection Open'));
+        this.db.on('disconnected', () => logger.info('Connection Closed'));
 
         await mongoose.connect(this._uri, { useNewUrlParser: true });
+    }
+    async disconnect(): Promise<void> {
+        await mongoose.disconnect();
     }
 }
 
