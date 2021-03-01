@@ -11,6 +11,16 @@ if [ "$DATABASE" = "notification" ]; then
   echo "PostgreSQL started"
 fi
 
+if [ "$MONGO_DATABASE" = "notification" ]; then
+  echo "Waiting for notification..."
+
+  while ! nc -z $MONGO_HOST $MONGO_PORT; do
+    sleep 0.1
+  done
+
+  echo "MongoDB started"
+fi
+
 bash bin/init-pg.sh
 
 pm2-runtime dist/index.js
