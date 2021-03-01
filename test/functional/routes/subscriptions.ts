@@ -49,4 +49,51 @@ describe('Subscriptions API', function () {
             }
         });
     });
+    /*
+    GIVEN a Express application configured for testing
+    WHEN the POST endpoint 'subscribe' is requested
+    THEN check that the response is valid
+    */
+    describe('POST /subscribe', function () {
+        it('should create a subscription', async function () {
+            try {
+                const newContestUUID = generateUUID();
+                const res = await chai
+                    .request(host)
+                    .post('/subscriptions/subscribe')
+                    .set('x-consumer-custom-id', user)
+                    .send({
+                        uuid: newContestUUID,
+                    });
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('msg').eq('OK');
+            } catch (err) {
+                throw err;
+            }
+        });
+    });
+    /*
+    GIVEN a Express application configured for testing
+    WHEN the DELETE endpoint 'unsubscribe' is requested
+    THEN check that the response is valid
+    */
+    describe('DELETE /unsubscribe', function () {
+        it('should delete a subscription', async function () {
+            try {
+                const res = await chai
+                    .request(host)
+                    .delete('/subscriptions/unsubscribe')
+                    .set('x-consumer-custom-id', user)
+                    .send({
+                        uuid: contestUUID,
+                    });
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('msg').eq('OK');
+            } catch (err) {
+                throw err;
+            }
+        });
+    });
 });
