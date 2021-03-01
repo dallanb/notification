@@ -5,8 +5,6 @@ services:
         container_name: app
         image: dallanbhatti/notification:test
         restart: on-failure
-        volumes:
-            - mongo_bin:/home/app/bin/mongo
         env_file:
             - env/test/.env.app
         healthcheck:
@@ -69,7 +67,7 @@ services:
         volumes:
             - mongo_data:/data/db
             - mongo_home:/home/mongodb # this must be manually created and chown'd to 999 https://github.com/docker-library/mongo/issues/323
-            - mongo_bin:/docker-entrypoint-initdb.d
+            - /home/dallanbhatti/Documents/Personal/techtapir/build/bin/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
         env_file:
             - env/test/.env.mongodb
         networks:
@@ -95,7 +93,6 @@ services:
 volumes:
     cache_data:
     db_data:
-    mongo_bin:
     mongo_data:
     mongo_home:
     rabbitmq_data:
