@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-
-echo $(whoami)
-echo $(id -u mongodb)
-echo $(id -g mongodb)
-
 mongo <<EOF
 use $MONGO_ADMIN_USER_DB
 db.createUser({

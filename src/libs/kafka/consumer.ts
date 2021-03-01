@@ -16,7 +16,7 @@ class Consumer {
 
     constructor(listener: (event: Message) => void) {
         this._client = new KafkaClient({
-            kafkaHost: `${config.KAFKA_HOST}:${config.KAFKA_PORT}`,
+            kafkaHost: config.KAFKA_URL,
         });
         this._topics = config.KAFKA_TOPICS.map((topic) => {
             return { topic };

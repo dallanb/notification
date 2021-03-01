@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import { get as _get } from 'lodash';
 
 import { Notification } from '../../models';
-import { wsSendPending } from '../../services/utils';
+import { wsSendPending } from '../../events/utils';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {

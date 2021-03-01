@@ -18,7 +18,7 @@ import {
     Score,
     Sport,
     Wager,
-} from '../services';
+} from '../events';
 
 class Libs {
     mongo: any;
