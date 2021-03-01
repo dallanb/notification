@@ -91,8 +91,6 @@ services:
             - rabbitmq_data/:/var/lib/rabbitmq/
         env_file:
             - env/.env.notification_rabbitmq
-#        ports:
-#            - 5672:5672
         networks:
             - app-net
     notification_zookeeper:
