@@ -29,9 +29,11 @@ RUN npm run build
 
 COPY build/bin/entrypoint.test.sh ./build/bin/entrypoint.sh
 
-COPY bin/init-pg.sh ./bin/pg/init-pg.sh
-COPY bin/reset-pg.sh ./bin/pg/reset-pg.sh
-COPY bin/init-mongo.sh ./bin/mongo/init-mongo.sh
+COPY bin/init-pg.sh ./bin/init-pg.sh
+COPY bin/reset-pg.sh ./bin/reset-pg.sh
+COPY bin/init-mongo.sh ./bin/init-mongo.sh
+COPY bin/reset-mongo.sh ./bin/reset-mongo.sh
+COPY bin/reset-redis.sh ./bin/reset-redis.sh
 
 EXPOSE 3000
 

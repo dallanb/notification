@@ -30,7 +30,7 @@ while ! nc -z $RABBITMQ_HOST $RABBITMQ_PORT; do
 done
 echo "RabbitMQ started"
 
-bash bin/pg/init-pg.sh
+bash bin/init-pg.sh
 
 pm2-runtime dist/index.js
 
