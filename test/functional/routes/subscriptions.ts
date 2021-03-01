@@ -5,7 +5,6 @@ import { before, describe, it } from 'mocha';
 // @ts-ignore
 import { deleteAllSubscriptions, seedSubscription } from '../../helpers';
 import { generateUUID } from '../../../src/common/utils';
-import { Notification } from '../../../src/models';
 
 // Assertion style
 chai.should();
