@@ -1,10 +1,11 @@
 import { before } from 'mocha';
 import { MongoDB } from '../../src/libs';
+import { globals } from '../helpers';
 
 before(async function () {
     // connect to mongo
-    this.mongo = MongoDB;
-    await this.mongo.connect();
+    globals.mongo = MongoDB;
+    globals.mongo.connect();
     // wipe db
-    await this.mongo.db.dropDatabase();
+    globals.mongo.db.dropDatabase();
 });

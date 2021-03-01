@@ -1,8 +1,9 @@
 import { after } from 'mocha';
+import { globals } from '../helpers';
 
 after(async function () {
-    await this.mongo.db.dropDatabase();
+    await globals.mongo.db.dropDatabase();
 
     // disconnect to from the mongo
-    await this.mongo.disconnect();
+    await globals.mongo.disconnect();
 });
