@@ -224,33 +224,30 @@ class Contest {
             case Constants.EVENTS.CONTESTS.PARTICIPANT_COMPLETED: {
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
-                if (notification.recipient !== notification.sender) {
-                    notification.properties = {
-                        contest_uuid: data.contest_uuid,
-                        participant_uuid: data.participant_uuid,
-                        league_uuid: data.league_uuid,
-                    };
-                    notification.message =
-                        data.message ||
-                        locale.EVENTS.CONTESTS.PARTICIPANT_COMPLETED;
-                    await Notification.create(notification);
+                notification.properties = {
+                    contest_uuid: data.contest_uuid,
+                    participant_uuid: data.participant_uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message ||
+                    locale.EVENTS.CONTESTS.PARTICIPANT_COMPLETED;
 
-                    const event = `${notification.topic}:${notification.key}`;
-                    const payload = {
-                        ..._pick(notification, ['message', 'sender']),
-                        ..._pick(notification.properties, [
-                            'contest_uuid',
-                            'participant_uuid',
-                            'league_uuid',
-                        ]),
-                    };
-                    // WS
-                    wsSendMessageToTopic(data.contest_uuid, event, payload);
-                    wsSendMessageToClient(
-                        notification.recipient,
-                        event,
-                        payload
-                    );
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'participant_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                // WS
+                wsSendMessageToTopic(data.contest_uuid, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
+
+                if (notification.recipient !== notification.sender) {
+                    await Notification.create(notification);
                     // send a total of pending
                     wsSendPending(notification.recipient);
                     rabbitPublish(
@@ -258,8 +255,9 @@ class Contest {
                         { exchange: 'web', exchangeType: 'direct' },
                         payload
                     );
-                    break;
                 }
+
+                break;
             }
         }
     };
