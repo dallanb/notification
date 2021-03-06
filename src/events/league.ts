@@ -102,8 +102,39 @@ class League {
                         { exchange: 'web', exchangeType: 'direct' },
                         payload
                     );
-                    break;
                 }
+                break;
+            }
+            case Constants.EVENTS.LEAGUES.MEMBER_INACTIVE: {
+                notification.recipient = data.owner_uuid;
+                notification.sender = data.user_uuid;
+                notification.properties = {
+                    league_member_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message || locale.EVENTS.LEAGUES.MEMBER_INACTIVE;
+                await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'league_member_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                // WS
+                wsSendMessageToClient(notification.recipient, event, payload);
+                // TODO: consider sending to topic
+                // send a total of pending
+                wsSendPending(notification.recipient);
+                rabbitPublish(
+                    notification.recipient,
+                    { exchange: 'web', exchangeType: 'direct' },
+                    payload
+                );
+                break;
             }
         }
     };

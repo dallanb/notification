@@ -34,6 +34,7 @@ const constants = {
             MEMBER_CREATED: 'member_created',
             MEMBER_PENDING: 'member_pending',
             MEMBER_ACTIVE: 'member_active',
+            MEMBER_INACTIVE: 'member_inactive',
         },
         SCORES: {
             STROKE_UPDATE: 'stroke_update',

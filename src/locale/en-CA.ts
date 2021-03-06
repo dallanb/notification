@@ -18,6 +18,7 @@ const constants = {
             MEMBER_CREATED: 'League Invite!',
             MEMBER_PENDING: 'League Invite!',
             MEMBER_ACTIVE: 'Member Invite Accepted!',
+            MEMBER_INACTIVE: 'Member Invite Declined',
         },
         SCORES: {
             STROKE_UPDATE: 'Strokes Updated!',
