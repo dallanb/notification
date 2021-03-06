@@ -3,6 +3,7 @@ const constants = {
         CONTESTS: {
             PARTICIPANT_INVITED: 'Contest Invite!',
             PARTICIPANT_ACTIVE: 'Contest Invite Accepted!',
+            PARTICIPANT_INACTIVE: 'Contest Invite Declined',
             PARTICIPANT_COMPLETED: 'Contest Marked Completed!',
             CONTEST_READY: 'Contest Ready!',
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
