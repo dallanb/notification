@@ -5,6 +5,7 @@ import { Notification } from '../models';
 import locale from '../locale';
 import {
     pgCreateSubscription,
+    pgDeleteSubscription,
     pgFetchAllSubscriptions,
     rabbitPublish,
     wsSendMessageToClient,
@@ -228,6 +229,8 @@ class Contest {
                 break;
             }
             case Constants.EVENTS.CONTESTS.PARTICIPANT_INACTIVE: {
+                await pgDeleteSubscription(data.contest_uuid, data.user_uuid);
+
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
                 notification.properties = {
