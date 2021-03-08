@@ -28,7 +28,22 @@ class League {
                 break;
             }
             case Constants.EVENTS.LEAGUES.MEMBER_CREATED: {
-                // no notification needed
+                notification.recipient = data.user_uuid;
+                notification.sender = data.owner_uuid;
+                notification.properties = {
+                    league_member_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
+                };
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'league_member_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                // WS
+                wsSendMessageToTopic(data.league_uuid, event, payload);
                 break;
             }
             case Constants.EVENTS.LEAGUES.MEMBER_PENDING: {
@@ -41,18 +56,18 @@ class League {
                 notification.message =
                     data.message || locale.EVENTS.LEAGUES.MEMBER_PENDING;
                 await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'league_member_uuid',
+                        'league_uuid',
+                    ]),
+                };
                 // WS
-                wsSendMessageToClient(
-                    notification.recipient,
-                    `${notification.topic}:${notification.key}`,
-                    {
-                        ..._pick(notification, ['message', 'sender']),
-                        ..._pick(notification.properties, [
-                            'league_member_uuid',
-                            'league_uuid',
-                        ]),
-                    }
-                );
+                wsSendMessageToTopic(data.league_uuid, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
                 // send a total of pending
                 wsSendPending(notification.recipient);
                 rabbitPublish(
@@ -72,23 +87,27 @@ class League {
                 await pgCreateSubscription(data.league_uuid, data.user_uuid);
                 notification.recipient = data.owner_uuid;
                 notification.sender = data.user_uuid;
-                if (notification.recipient !== notification.sender) {
-                    notification.properties = {
-                        league_member_uuid: data.uuid,
-                        league_uuid: data.league_uuid,
-                    };
-                    notification.message =
-                        data.message || locale.EVENTS.LEAGUES.MEMBER_ACTIVE;
-                    await notification.save();
 
-                    const event = `${notification.topic}:${notification.key}`;
-                    const payload = {
-                        ..._pick(notification, ['message', 'sender']),
-                        ..._pick(notification.properties, [
-                            'league_member_uuid',
-                            'league_uuid',
-                        ]),
-                    };
+                notification.properties = {
+                    league_member_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message || locale.EVENTS.LEAGUES.MEMBER_ACTIVE;
+                await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'league_member_uuid',
+                        'league_uuid',
+                    ]),
+                };
+
+                wsSendMessageToTopic(data.league_uuid, event, payload);
+
+                if (notification.recipient !== notification.sender) {
                     // WS
                     wsSendMessageToClient(
                         notification.recipient,
@@ -102,8 +121,39 @@ class League {
                         { exchange: 'web', exchangeType: 'direct' },
                         payload
                     );
-                    break;
                 }
+                break;
+            }
+            case Constants.EVENTS.LEAGUES.MEMBER_INACTIVE: {
+                notification.recipient = data.owner_uuid;
+                notification.sender = data.user_uuid;
+                notification.properties = {
+                    league_member_uuid: data.uuid,
+                    league_uuid: data.league_uuid,
+                };
+                notification.message =
+                    data.message || locale.EVENTS.LEAGUES.MEMBER_INACTIVE;
+                await notification.save();
+
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    ..._pick(notification, ['message', 'sender']),
+                    ..._pick(notification.properties, [
+                        'league_member_uuid',
+                        'league_uuid',
+                    ]),
+                };
+                // WS
+                wsSendMessageToTopic(data.league_uuid, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
+                // send a total of pending
+                wsSendPending(notification.recipient);
+                rabbitPublish(
+                    notification.recipient,
+                    { exchange: 'web', exchangeType: 'direct' },
+                    payload
+                );
+                break;
             }
         }
     };

@@ -1,24 +1,45 @@
-FROM node:12
+###########
+# BUILDER #
+###########
 
+FROM node:12 as builder
 
-# Create app directory
-WORKDIR /home/app
+WORKDIR /usr/src/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY package.json ./package.json
-#COPY package-lock.json ./package-lock.json
 COPY tsconfig.json ./tsconfig.json
 COPY tslint.json ./tslint.json
-#COPY node_modules ./node_modules
 COPY environment.d.ts ./environment.d.ts
+
 COPY src ./src
 
 RUN npm install
 
-RUN npm install pm2 -g
 RUN npm run build
+
+#########
+# FINAL #
+#########
+FROM node:12
+
+# Create app directory
+WORKDIR /home/app
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y postgresql-client netcat-openbsd gcc && \
+    apt-get clean
+
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/package.json ./package.json
+COPY --from=builder /usr/src/app/package-lock.json ./package-lock.json
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+RUN npm install pm2 -g
 
 COPY build/bin/entrypoint.qaw.sh ./build/bin/entrypoint.sh
 
@@ -27,12 +48,7 @@ COPY bin/init-pg.sh ./bin/init-pg.sh
 
 COPY bin/reset-pg.sh ./bin/reset-pg.sh
 COPY bin/reset-mongo.sh ./bin/reset-mongo.sh
-
-# psql
-RUN apt-get update && apt-get install -y postgresql-client netcat
-
-EXPOSE 3000
+COPY bin/reset-redis.sh ./bin/reset-redis.sh
 
 ## run entrypoint.sh
 ENTRYPOINT ["sh", "./build/bin/entrypoint.sh"]
-
