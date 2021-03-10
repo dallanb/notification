@@ -27,6 +27,22 @@ class Member {
             case Constants.EVENTS.MEMBERS.MEMBER_ACTIVE: {
                 break;
             }
+            case Constants.EVENTS.MEMBERS.DISPLAY_NAME_UPDATED: {
+                wsSendMessageToClient(
+                    data.user_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
+            case Constants.EVENTS.MEMBERS.COUNTRY_UPDATED: {
+                wsSendMessageToClient(
+                    data.user_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
         }
     };
 }

@@ -28,6 +28,8 @@ const constants = {
         MEMBERS: {
             MEMBER_PENDING: 'member_pending',
             MEMBER_ACTIVE: 'member_active',
+            DISPLAY_NAME_UPDATED: 'display_name_updated',
+            COUNTRY_UPDATED: 'country_updated',
         },
         LEAGUES: {
             LEAGUE_CREATED: 'league_created',
