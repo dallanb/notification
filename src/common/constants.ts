@@ -26,6 +26,9 @@ const constants = {
             PARTICIPANT_COMPLETED: 'participant_completed',
         },
         MEMBERS: {
+            AVATAR_CREATED: 'avatar_created',
+            AVATAR_UPDATED: 'avatar_updated',
+            AVATAR_DELETED: 'avatar_deleted',
             MEMBER_PENDING: 'member_pending',
             MEMBER_ACTIVE: 'member_active',
             DISPLAY_NAME_UPDATED: 'display_name_updated',

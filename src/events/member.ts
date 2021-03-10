@@ -1,14 +1,7 @@
 import { Message } from 'kafka-node';
-import { pick as _pick } from 'lodash';
 import { Constants, logger } from '../common';
 import { Notification } from '../models';
-import {
-    pgCreateSubscription,
-    rabbitPublish,
-    wsSendMessageToClient,
-    wsSendPending,
-} from './utils';
-import locale from '../locale/en-CA';
+import { wsSendMessageToClient } from './utils';
 
 class Member {
     handleEvent = async (key: Message['key'], value: Message['value']) => {
@@ -21,6 +14,16 @@ class Member {
             topic: Constants.TOPICS.MEMBERS,
         });
         switch (key) {
+            case Constants.EVENTS.MEMBERS.AVATAR_CREATED:
+            case Constants.EVENTS.MEMBERS.AVATAR_UPDATED:
+            case Constants.EVENTS.MEMBERS.AVATAR_DELETED: {
+                wsSendMessageToClient(
+                    data.user_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
             case Constants.EVENTS.MEMBERS.MEMBER_PENDING: {
                 break;
             }
