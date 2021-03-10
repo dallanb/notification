@@ -44,6 +44,9 @@ const constants = {
         SCORES: {
             STROKE_UPDATE: 'stroke_update',
         },
+        WAGERS: {
+            PAYOUT_UPDATED: 'payout_updated',
+        },
     },
 };
 
