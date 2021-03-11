@@ -45,6 +45,7 @@ const constants = {
             STROKE_UPDATE: 'stroke_update',
         },
         WAGERS: {
+            WAGER_CREATED: 'wager_created',
             PAYOUT_UPDATED: 'payout_updated',
         },
     },

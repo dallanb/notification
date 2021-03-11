@@ -13,6 +13,14 @@ class Wager {
             topic: Constants.TOPICS.WAGERS,
         };
         switch (key) {
+            case Constants.EVENTS.WAGERS.WAGER_CREATED: {
+                wsSendMessageToTopic(
+                    data.contest_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
             case Constants.EVENTS.WAGERS.PAYOUT_UPDATED: {
                 wsSendMessageToTopic(
                     data.contest_uuid,
