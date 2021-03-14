@@ -13,12 +13,12 @@ class Course {
             typeof value === 'string' ? JSON.parse(value) : value.toString();
         const notification = new Notification({
             key,
-            topic: Constants.TOPICS.LEAGUES,
+            topic: Constants.TOPICS.COURSES,
         });
         switch (key) {
             case Constants.EVENTS.COURSES.COURSE_APPROVED: {
                 notification.sender = null;
-                notification.recipient = data.user_uuid;
+                notification.recipient = data.created_by;
                 notification.properties = {
                     course_uuid: data.uuid,
                 };
