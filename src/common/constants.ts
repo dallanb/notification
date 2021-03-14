@@ -3,6 +3,7 @@ const constants = {
         AUTH: 'auth',
         ACCOUNTS: 'accounts',
         CONTESTS: 'contests',
+        COURSES: 'courses',
         LEAGUES: 'leagues',
         MEMBERS: 'members',
         SCORES: 'scores',
@@ -24,6 +25,10 @@ const constants = {
             PARTICIPANT_INACTIVE: 'participant_inactive',
             PARTICIPANT_ACTIVE: 'participant_active',
             PARTICIPANT_COMPLETED: 'participant_completed',
+        },
+        COURSES: {
+            COURSE_CREATED: 'course_created',
+            COURSE_APPROVED: 'course_approved',
         },
         MEMBERS: {
             AVATAR_CREATED: 'avatar_created',

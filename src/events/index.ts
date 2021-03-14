@@ -1,6 +1,7 @@
 export { default as Account } from './account';
 export { default as Auth } from './auth';
 export { default as Contest } from './contest';
+export { default as Course } from './course';
 export { default as Member } from './member';
 export { default as League } from './league';
 export { default as Score } from './score';
