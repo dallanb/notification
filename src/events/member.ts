@@ -46,6 +46,22 @@ class Member {
                 );
                 break;
             }
+            case Constants.EVENTS.MEMBERS.STAT_UPDATED: {
+                wsSendMessageToClient(
+                    data.user_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
+            case Constants.EVENTS.MEMBERS.WALLET_UPDATED: {
+                wsSendMessageToClient(
+                    data.user_uuid,
+                    `${notification.topic}:${notification.key}`,
+                    data
+                );
+                break;
+            }
         }
     };
 }

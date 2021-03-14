@@ -38,6 +38,8 @@ const constants = {
             MEMBER_ACTIVE: 'member_active',
             DISPLAY_NAME_UPDATED: 'display_name_updated',
             COUNTRY_UPDATED: 'country_updated',
+            STAT_UPDATED: 'stat_updated',
+            WALLET_UPDATED: 'wallet_updated',
         },
         LEAGUES: {
             LEAGUE_CREATED: 'league_created',
