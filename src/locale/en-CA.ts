@@ -10,6 +10,10 @@ const constants = {
             CONTEST_ACTIVE: 'Contest Has Been Activated!',
             CONTEST_COMPLETED: 'Contest is Completed!',
         },
+        COURSES: {
+            COURSE_CREATED: 'Course Created!',
+            COURSE_APPROVED: 'Course Has Been Approved!',
+        },
         MEMBERS: {
             MEMBER_PENDING: '',
             MEMBER_ACTIVE: '',
