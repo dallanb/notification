@@ -1,9 +1,9 @@
 declare var process: {
     env: {
         ENV: string;
+        HOST: string;
         PORT: number;
-        KAFKA_HOST: string;
-        KAFKA_PORT: number;
+        KAFKA_URL: string;
         KAFKA_TOPICS: string;
         RABBITMQ_HOST: string;
         RABBITMQ_PORT: number;
@@ -19,9 +19,9 @@ declare var process: {
 
 class Config {
     ENV: string = process.env.ENV;
+    HOST: string = process.env.HOST;
     PORT: number = process.env.PORT;
-    KAFKA_HOST: string = process.env.KAFKA_HOST;
-    KAFKA_PORT: number = process.env.KAFKA_PORT;
+    KAFKA_URL: string = process.env.KAFKA_URL;
     KAFKA_TOPICS: string[] = process.env.KAFKA_TOPICS
         ? process.env.KAFKA_TOPICS.split(',')
         : [];

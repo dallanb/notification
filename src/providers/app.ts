@@ -1,6 +1,7 @@
 import { logger } from '../common';
 import express from 'express';
 import http, { Server } from 'http';
+import config from '../config';
 
 class App {
     private readonly _application: express.Application;
@@ -20,8 +21,8 @@ class App {
     }
 
     listen(): void {
-        this.httpServer.listen(process.env.PORT, () => {
-            logger.info(`Server Started. Running at port ${process.env.PORT}`);
+        this.httpServer.listen(config.PORT, () => {
+            logger.info(`Server Started. Running at port ${config.PORT}`);
         });
     }
 }

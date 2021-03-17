@@ -15,6 +15,17 @@ export const pgCreateSubscription = async (uuid: string, user: string) => {
     }
 };
 
+export const pgDeleteSubscription = async (uuid: string, user: string) => {
+    try {
+        await Libs.pg.query(
+            'DELETE FROM subscription WHERE uuid = $1 AND user_uuid = $2',
+            [uuid, user]
+        );
+    } catch (err) {
+        logger.error(err);
+    }
+};
+
 export const pgFetchAllSubscriptions = async (uuid: string) => {
     try {
         const query = await Libs.pg.query(
