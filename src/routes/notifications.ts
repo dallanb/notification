@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', Notifications.fetchAll);
 router.get('/pending', Notifications.pending);
-router.put('/:_id', Notifications.update);
 router.put('/user', Notifications.updateByUser);
+router.put('/:_id', Notifications.update);
 
 export default router;

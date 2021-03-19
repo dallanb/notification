@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="2.0170" tests="2" failures="5">
+  <testsuite name="Root Suite" timestamp="2021-03-19T03:46:38" tests="0" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Notifications API" timestamp="2021-03-19T03:46:38" tests="0" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/notifications.ts" time="2.0030" failures="1">
+    <testcase name="Notifications API &quot;before all&quot; hook in &quot;Notifications API&quot;" time="2.0030" classname="&quot;before all&quot; hook in &quot;Notifications API&quot;">
+      <failure message="Timeout of 2000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/notifications.ts)" type="Error"><![CDATA[Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/notifications.ts)]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Ping API" timestamp="2021-03-19T03:46:40" tests="0" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/ping.ts" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="GET /ping" timestamp="2021-03-19T03:46:40" tests="1" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/ping.ts" time="0.0100" failures="1">
+    <testcase name="Ping API GET /ping should ping" time="0.0100" classname="should ping">
+      <failure message="getaddrinfo ENOTFOUND undefined undefined:80" type="Error"><![CDATA[Error: getaddrinfo ENOTFOUND undefined undefined:80
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Subscriptions API" timestamp="2021-03-19T03:46:40" tests="0" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/subscriptions.ts" time="0.0020" failures="1">
+    <testcase name="Subscriptions API &quot;before all&quot; hook in &quot;Subscriptions API&quot;" time="0.0020" classname="&quot;before all&quot; hook in &quot;Subscriptions API&quot;">
+      <failure message="connect ECONNREFUSED 127.0.0.1:5432" type="Error"><![CDATA[Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1107:14)]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Tokens API" timestamp="2021-03-19T03:46:40" tests="0" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/tokens.ts" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="POST /tokens" timestamp="2021-03-19T03:46:40" tests="1" file="/home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/functional/routes/tokens.ts" time="0.0020" failures="2">
+    <testcase name="Tokens API POST /tokens should create a token" time="0.0010" classname="should create a token">
+      <failure message="getaddrinfo ENOTFOUND undefined undefined:80" type="Error"><![CDATA[Error: getaddrinfo ENOTFOUND undefined undefined:80
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)]]></failure>
+    </testcase>
+    <testcase name="&quot;after all&quot; hook in &quot;{root}&quot;" time="0.0010" classname="&quot;after all&quot; hook in &quot;{root}&quot;">
+      <failure message="Connection 0 was disconnected when calling `dropDatabase`" type="MongooseError"><![CDATA[MongooseError: Connection 0 was disconnected when calling `dropDatabase`
+    at NativeConnection.dropDatabase (node_modules/mongoose/lib/connection.js:545:31)
+    at Context.<anonymous> (test/fixtures/teardownMongo.ts:5:28)
+    at Generator.next (<anonymous>)
+    at /home/dallanbhatti/Documents/Personal/techtapir/services/notification/test/fixtures/teardownMongo.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (test/fixtures/teardownMongo.ts:4:12)
+    at Context.<anonymous> (test/fixtures/teardownMongo.ts:15:12)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

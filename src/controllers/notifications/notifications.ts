@@ -4,6 +4,7 @@ import { get as _get } from 'lodash';
 
 import { Notification } from '../../models';
 import { wsSendPending } from '../../events/utils';
+import { logger } from '../../common';
 
 class Notifications {
     public static async fetchAll(req: Request, res: Response): Promise<any> {
@@ -118,7 +119,6 @@ class Notifications {
     ): Promise<any> {
         const recipient = req.header('x-consumer-custom-id');
         const { body: $set } = req;
-
         try {
             if (!recipient) {
                 throw new Error('recipient is required');
