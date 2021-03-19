@@ -95,4 +95,29 @@ describe('Notifications API', async function () {
             }
         });
     });
+    /*
+    GIVEN a Express application configured for testing
+    WHEN the PUT endpoint 'updateByUser' is requested
+    THEN check that the response is valid
+    */
+    describe('PUT /notifications/user', function () {
+        it('should update all notification that match recipient', async function () {
+            try {
+                const update = { read: false };
+                const res = await chai
+                    .request(host)
+                    .put(`/notifications/user`)
+                    .set('x-consumer-custom-id', recipient)
+                    .send(update);
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('msg').eq('OK');
+                const notifications = await Notification.find({});
+                notifications.should.have.length(1);
+                notifications[0].should.have.property('read').eq(update.read);
+            } catch (err) {
+                throw err;
+            }
+        });
+    });
 });

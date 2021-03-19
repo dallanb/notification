@@ -111,6 +111,41 @@ class Notifications {
             });
         }
     }
+
+    public static async updateByUser(
+        req: Request,
+        res: Response
+    ): Promise<any> {
+        const recipient = req.header('x-consumer-custom-id');
+        const { body: $set } = req;
+
+        try {
+            if (!recipient) {
+                throw new Error('recipient is required');
+            }
+
+            await Notification.updateMany(
+                { recipient },
+                {
+                    $set,
+                },
+                { new: true }
+            ).exec();
+
+            await wsSendPending(recipient);
+
+            res.json({
+                msg: 'OK',
+                data: null,
+            });
+        } catch (err) {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+                msg: httpStatus[500],
+                data: null,
+                err,
+            });
+        }
+    }
 }
 
 export default Notifications;
