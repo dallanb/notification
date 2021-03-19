@@ -94,7 +94,6 @@ class League {
                 };
                 notification.message =
                     data.message || locale.EVENTS.LEAGUES.MEMBER_ACTIVE;
-                await notification.save();
 
                 const event = `${notification.topic}:${notification.key}`;
                 const payload = {
@@ -108,6 +107,7 @@ class League {
                 wsSendMessageToTopic(data.league_uuid, event, payload);
 
                 if (notification.recipient !== notification.sender) {
+                    await notification.save();
                     // WS
                     wsSendMessageToClient(
                         notification.recipient,
