@@ -65,6 +65,7 @@ class Server {
                 ws.on('close', () => this._onClose(ws));
             });
 
+            // Refresh live ws connections every 30 seconds and terminate any closed connections
             const interval = setInterval(() => {
                 this.wss?.clients.forEach((client) => {
                     if (!_get(client, ['isAlive'])) return client.terminate();
@@ -88,7 +89,6 @@ class Server {
         const socketId = this._generateUUID();
         const type = this._getConnectionType(request);
         const uuid = this._getUUIDByTopic(type, request);
-
         if (!uuid) {
             throw new Error(`Invalid uuid, cannot connect`);
         }
