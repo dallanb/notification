@@ -103,17 +103,12 @@ class League {
                         'league_uuid',
                     ]),
                 };
-
+                // WS
                 wsSendMessageToTopic(data.league_uuid, event, payload);
+                wsSendMessageToClient(notification.recipient, event, payload);
 
                 if (notification.recipient !== notification.sender) {
                     await notification.save();
-                    // WS
-                    wsSendMessageToClient(
-                        notification.recipient,
-                        event,
-                        payload
-                    );
                     // send a total of pending
                     wsSendPending(notification.recipient);
                     rabbitPublish(
