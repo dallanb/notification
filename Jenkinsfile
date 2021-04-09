@@ -64,7 +64,8 @@ pipeline {
                             sh "docker buildx ls"
                             sh "docker buildx create --name jenkinsbuilder"
                             sh "docker buildx use jenkinsbuilder"
-                            sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64,linux/arm64 --push ."                        }
+                            sh "docker buildx build -f build/Dockerfile.$BRANCH_NAME -t $dockerImageName --cache-from $dockerImageName --platform linux/amd64,linux/arm64 --push ."
+                        }
                     }
                 }
             }
