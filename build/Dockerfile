@@ -18,8 +18,10 @@ COPY tsconfig.json ./tsconfig.json
 COPY tslint.json ./tslint.json
 COPY environment.d.ts ./environment.d.ts
 COPY .mocharc.json ./.mocharc.json
+COPY database.json ./database.json
 
 RUN npm install
+RUN npm install -g db-migrate
 
 COPY src ./src
 COPY build/bin/entrypoint.sh ./build/bin/entrypoint.sh

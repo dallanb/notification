@@ -25,6 +25,6 @@ while ! nc -z $ZOOKEEPER_HOST $ZOOKEEPER_PORT; do
 done
 echo "Kafka started"
 
-bash bin/init-pg.sh
+db-migrate up -e pg
 
 npm run devStart

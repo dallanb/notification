@@ -6,7 +6,7 @@ services:
         image: adminer:latest
         restart: always
         ports:
-            - 8080:8080
+            - 8070:8080
         networks:
             - app-net
     notification:
@@ -21,6 +21,7 @@ services:
             - ${HUNCHO_DIR}/services/notification/src:/home/app/src
             - ${HUNCHO_DIR}/services/notification/test:/home/app/test
             - ${HUNCHO_DIR}/services/notification/package.json:/home/app/package.json
+            - ${HUNCHO_DIR}/services/notification/migrations:/home/app/migrations
         env_file:
             - env/.env.notification
         healthcheck:

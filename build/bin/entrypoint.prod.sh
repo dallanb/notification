@@ -21,6 +21,6 @@ if [ "$MONGO_DATABASE" = "notification" ]; then
   echo "MongoDB started"
 fi
 
-bash bin/init-pg.sh # need to do something about this!
+db-migrate up -e pg
 
 pm2-runtime dist/index.js

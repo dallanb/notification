@@ -1,0 +1,10 @@
+{
+  "pg": {
+    "driver": "pg",
+    "user": {"ENV":  "SQL_USER"},
+    "password": {"ENV":  "SQL_PASSWORD"},
+    "database": {"ENV":  "DATABASE"},
+    "host": {"ENV":  "SQL_HOST"},
+    "port": {"ENV":  "SQL_PORT"}
+  }
+}
