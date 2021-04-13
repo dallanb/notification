@@ -16,9 +16,11 @@ COPY package.json ./package.json
 COPY tsconfig.json ./tsconfig.json
 COPY tslint.json ./tslint.json
 COPY environment.d.ts ./environment.d.ts
+COPY database.json ./database.json
 
 COPY src ./src
 COPY test ./test
+COPY migrations ./migrations
 
 COPY .mocharc.json ./.mocharc.json
 

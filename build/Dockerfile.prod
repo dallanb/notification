@@ -44,6 +44,7 @@ COPY --from=builder /usr/src/app/database.json ./database.json
 RUN npm install pm2 db-migrate -g
 
 COPY build/bin/entrypoint.prod.sh ./build/bin/entrypoint.sh
+COPY migrations ./migrations
 
 COPY bin/init-pg.sh ./bin/init-pg.sh
 
