@@ -21,7 +21,9 @@ class Consumer {
         this._topics = config.KAFKA_TOPICS.map((topic) => {
             return { topic };
         });
-        this._options = {};
+        this._options = {
+            groupId: config.KAFKA_GROUP_ID
+        };
         this._offset = new Offset(this.client);
         this.listener = listener;
     }

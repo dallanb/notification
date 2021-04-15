@@ -13,6 +13,7 @@ MONGO_PORT=27017
 MONGO_DATABASE=app
 KAFKA_URL=kafka:9092
 KAFKA_TOPICS=auth,accounts,contests,courses,leagues,members,scores,sports,wagers
+KAFKA_GROUP_ID=app
 ZOOKEEPER_HOST=zookeeper
 ZOOKEEPER_PORT=2181
 RABBITMQ_HOST=rabbitmq

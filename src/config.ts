@@ -5,6 +5,7 @@ declare var process: {
         PORT: number;
         KAFKA_URL: string;
         KAFKA_TOPICS: string;
+        KAFKA_GROUP_ID: string;
         RABBITMQ_HOST: string;
         RABBITMQ_PORT: number;
         RABBITMQ_USERNAME: string;
@@ -25,6 +26,7 @@ class Config {
     KAFKA_TOPICS: string[] = process.env.KAFKA_TOPICS
         ? process.env.KAFKA_TOPICS.split(',')
         : [];
+    KAFKA_GROUP_ID: string = process.env.KAFKA_GROUP_ID;
     RABBITMQ_HOST: string = process.env.RABBITMQ_HOST;
     RABBITMQ_PORT: number = process.env.RABBITMQ_PORT;
     RABBITMQ_USERNAME: string = process.env.RABBITMQ_USERNAME;
