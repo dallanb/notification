@@ -16,6 +16,9 @@ const constants = {
             PENDING: 'pending',
         },
         CONTESTS: {
+            AVATAR_CREATED: 'avatar_created',
+            AVATAR_UPDATED: 'avatar_updated',
+            AVATAR_DELETED: 'avatar_deleted',
             CONTEST_CREATED: 'contest_created',
             CONTEST_READY: 'contest_ready',
             CONTEST_INACTIVE: 'contest_inactive',
@@ -26,7 +29,8 @@ const constants = {
             PARTICIPANT_ACTIVE: 'participant_active',
             PARTICIPANT_COMPLETED: 'participant_completed',
             NAME_UPDATED: 'name_updated',
-            START_TIME_UPDATED: 'start_time_updated'
+            START_TIME_UPDATED: 'start_time_updated',
+
 
 
         },

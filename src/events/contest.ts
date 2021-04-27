@@ -24,6 +24,13 @@ class Contest {
             topic: Constants.TOPICS.CONTESTS,
         };
         switch (key) {
+            case Constants.EVENTS.CONTESTS.AVATAR_CREATED:
+            case Constants.EVENTS.CONTESTS.AVATAR_UPDATED:
+            case Constants.EVENTS.CONTESTS.AVATAR_DELETED: {
+                const event = `${notification.topic}:${notification.key}`;
+                wsSendMessageToTopic(data.uuid, event, data);
+                break;
+            }
             case Constants.EVENTS.CONTESTS.CONTEST_CREATED: {
                 await pgCreateSubscription(data.uuid, data.owner_uuid);
                 // no notification needed
@@ -335,41 +342,13 @@ class Contest {
                 break;
             }
             case Constants.EVENTS.CONTESTS.NAME_UPDATED: {
-                notification.sender = null;
-                notification.properties = {
-                    contest_uuid: data.uuid,
-                    league_uuid: data.league_uuid,
-                    name: data.name
-                };
                 const event = `${notification.topic}:${notification.key}`;
-                const payload = {
-                    ..._pick(notification, ['message', 'sender']),
-                    ..._pick(notification.properties, [
-                        'contest_uuid',
-                        'league_uuid',
-                        'name'
-                    ]),
-                };
-                wsSendMessageToTopic(data.uuid, event, payload);
+                wsSendMessageToTopic(data.uuid, event, data);
                 break;
             }
             case Constants.EVENTS.CONTESTS.START_TIME_UPDATED: {
-                notification.sender = null;
-                notification.properties = {
-                    contest_uuid: data.uuid,
-                    league_uuid: data.league_uuid,
-                    start_time: data.start_time
-                };
                 const event = `${notification.topic}:${notification.key}`;
-                const payload = {
-                    ..._pick(notification, ['message', 'sender']),
-                    ..._pick(notification.properties, [
-                        'contest_uuid',
-                        'league_uuid',
-                        'start_time'
-                    ]),
-                };
-                wsSendMessageToTopic(data.uuid, event, payload);
+                wsSendMessageToTopic(data.uuid, event, data);
                 break;
             }
         }
