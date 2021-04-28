@@ -28,7 +28,7 @@ class Contest {
             case Constants.EVENTS.CONTESTS.AVATAR_UPDATED:
             case Constants.EVENTS.CONTESTS.AVATAR_DELETED: {
                 const event = `${notification.topic}:${notification.key}`;
-                wsSendMessageToTopic(data.uuid, event, data);
+                wsSendMessageToTopic(data.contest_uuid, event, data);
                 break;
             }
             case Constants.EVENTS.CONTESTS.CONTEST_CREATED: {
