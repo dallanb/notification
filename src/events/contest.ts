@@ -27,8 +27,24 @@ class Contest {
             case Constants.EVENTS.CONTESTS.AVATAR_CREATED:
             case Constants.EVENTS.CONTESTS.AVATAR_UPDATED:
             case Constants.EVENTS.CONTESTS.AVATAR_DELETED: {
+                notification.recipient = null;
+                notification.sender = data.owner_uuid;
+                notification.properties = {
+                    contest_uuid: data.contest_uuid,
+                    league_uuid: data.league_uuid,
+                    s3_filename: data.s3_filename,
+                };
                 const event = `${notification.topic}:${notification.key}`;
-                wsSendMessageToTopic(data.contest_uuid, event, data);
+                const payload = {
+                    ..._pick(notification, ['sender']),
+                    ..._pick(notification.properties, [
+                        'contest_uuid',
+                        'league_uuid',
+                        's3_filename',
+                    ]),
+                };
+                // WS
+                wsSendMessageToTopic(data.contest_uuid, event, payload);
                 break;
             }
             case Constants.EVENTS.CONTESTS.CONTEST_CREATED: {
