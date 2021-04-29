@@ -24,6 +24,13 @@ class Contest {
             topic: Constants.TOPICS.CONTESTS,
         };
         switch (key) {
+            case Constants.EVENTS.CONTESTS.AVATAR_CREATED:
+            case Constants.EVENTS.CONTESTS.AVATAR_UPDATED:
+            case Constants.EVENTS.CONTESTS.AVATAR_DELETED: {
+                const event = `${notification.topic}:${notification.key}`;
+                wsSendMessageToTopic(data.contest_uuid, event, data);
+                break;
+            }
             case Constants.EVENTS.CONTESTS.CONTEST_CREATED: {
                 await pgCreateSubscription(data.uuid, data.owner_uuid);
                 // no notification needed
@@ -332,6 +339,26 @@ class Contest {
                     );
                 }
 
+                break;
+            }
+            case Constants.EVENTS.CONTESTS.NAME_UPDATED: {
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    league_uuid: data.league_uuid,
+                    contest_uuid: data.uuid,
+                    name: data.name,
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
+                break;
+            }
+            case Constants.EVENTS.CONTESTS.START_TIME_UPDATED: {
+                const event = `${notification.topic}:${notification.key}`;
+                const payload = {
+                    league_uuid: data.league_uuid,
+                    contest_uuid: data.uuid,
+                    start_time: data.start_time,
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
                 break;
             }
         }
