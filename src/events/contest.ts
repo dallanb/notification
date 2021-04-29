@@ -343,12 +343,22 @@ class Contest {
             }
             case Constants.EVENTS.CONTESTS.NAME_UPDATED: {
                 const event = `${notification.topic}:${notification.key}`;
-                wsSendMessageToTopic(data.uuid, event, data);
+                const payload = {
+                    league_uuid: data.league_uuid,
+                    contest_uuid: data.uuid,
+                    name: data.name,
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
                 break;
             }
             case Constants.EVENTS.CONTESTS.START_TIME_UPDATED: {
                 const event = `${notification.topic}:${notification.key}`;
-                wsSendMessageToTopic(data.uuid, event, data);
+                const payload = {
+                    league_uuid: data.league_uuid,
+                    contest_uuid: data.uuid,
+                    start_time: data.start_time,
+                };
+                wsSendMessageToTopic(data.uuid, event, payload);
                 break;
             }
         }
