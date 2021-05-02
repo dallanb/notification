@@ -8,8 +8,8 @@ const notFoundHandler = (
 ) => {
     const code = httpStatus.NOT_FOUND;
     const message = httpStatus[404];
-
     response.status(code).json({ msg: message, data: null, err: null });
+    next();
 };
 
 export default notFoundHandler;

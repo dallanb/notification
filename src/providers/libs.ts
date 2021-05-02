@@ -41,32 +41,68 @@ class Libs {
     async initKafka(): Promise<void> {
         this.kafka = new KafkaConsumer(({ topic, key, value }: Message) => {
             switch (topic) {
-                case Constants.TOPICS.AUTH:
-                    Auth.handleEvent(key, value);
-                    break;
                 case Constants.TOPICS.ACCOUNTS:
-                    Account.handleEvent(key, value);
+                    try {
+                        Account.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
+                    break;
+                case Constants.TOPICS.AUTH:
+                    try {
+                        Auth.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.CONTESTS:
-                    Contest.handleEvent(key, value);
+                    try {
+                        Contest.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.COURSES:
-                    Course.handleEvent(key, value);
+                    try {
+                        Course.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.LEAGUES:
-                    League.handleEvent(key, value);
+                    try {
+                        League.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.MEMBERS:
-                    Member.handleEvent(key, value);
+                    try {
+                        Member.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.SCORES:
-                    Score.handleEvent(key, value);
+                    try {
+                        Score.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.SPORTS:
-                    Sport.handleEvent(key, value);
+                    try {
+                        Sport.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 case Constants.TOPICS.WAGERS:
-                    Wager.handleEvent(key, value);
+                    try {
+                        Wager.handleEvent(key, value);
+                    } catch (e) {
+                        logger.error(e);
+                    }
                     break;
                 default:
                     throw new Error('Invalid topic');
@@ -98,8 +134,8 @@ class Libs {
         this.ws = new WSServer(
             httpServer,
             (client, data) => logger.info('CONNECTED'),
-            (client) => logger.info('CLOSED'),
-            (data) => logger.info('MESSAGE')
+            client => logger.info('CLOSED'),
+            data => logger.info('MESSAGE')
         );
         this.ws.init();
     }
