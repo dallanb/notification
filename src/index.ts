@@ -4,6 +4,7 @@ import { logger } from './common';
 const run = async () => {
     Middlewares.initBodyParser(App.application);
     Middlewares.initCors(App.application);
+    Middlewares.initRequestLogger(App.application);
 
     await Libs.initRabbitMQ();
     await Libs.initKafka();
@@ -11,11 +12,11 @@ const run = async () => {
     await Libs.initRedis();
     await Libs.initMongo();
     await Libs.initWS(App.httpServer);
-
     // routes
     Routes.init(App.application);
 
-    // middlewares
+    // middleware
+    Middlewares.initErrorLogger(App.application);
     Middlewares.initErrorHandler(App.application);
     Middlewares.initNotFoundHandler(App.application);
 
@@ -24,4 +25,4 @@ const run = async () => {
 
 run()
     .then(() => logger.info('App Ready'))
-    .catch((err) => logger.error('App Not Ready', err));
+    .catch(err => logger.error('App Not Ready', err));

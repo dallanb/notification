@@ -1,18 +1,14 @@
 import winston from 'winston';
-
-const prettyJson = winston.format.printf((info) => {
-    if (info.message.constructor === Object) {
-        info.message = JSON.stringify(info.message, null, 4);
-    }
-    return `${info.level}: ${info.message}`;
-});
+import { prettyJson } from './utils';
 
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
+        winston.format.timestamp({ format: 'MMM-DD-YYYY HH:mm:ss' }),
         winston.format.errors({ stack: true }),
         winston.format.metadata(),
-        winston.format.json()
+        winston.format.json(),
+        prettyJson
     ),
     transports: [new winston.transports.File({ filename: 'logfile.log' })],
 });
